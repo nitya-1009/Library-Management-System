@@ -1,0 +1,375 @@
+﻿@*
+ For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+ *@
+@model FirstMVCWebApp.Models.StudentRegistrationViewModel
+<style>
+    .card {
+        border-radius: 20px;
+        overflow: hidden; /* card ke corner class rahege */
+    }
+
+    .card-header {
+        margin-bottom: 0;
+        padding: 15px;
+        font-size: 24px;
+        font-weight: 500;
+    }
+
+    .table thead th {
+        background: #efe2ff !important;
+        text-align: center;
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+
+    .table td {
+        vertical-align: middle;
+    }
+
+    .btn {
+        border-radius: 4px;
+    }
+
+    .table-wrapper {
+        max-height: 500px; /* Adjust this value to change visible height */
+        overflow-y: auto;
+    }
+
+    /* Freezes the table header at the top of the scroll wrapper */
+    .table-primary th {
+        position: sticky !important;
+        top: 0;
+        z-index: 2;
+        background-color: #efe2ff !important; /* Keeps your header color solid while scrolling */
+    }
+</style>
+
+@{
+    ViewData["Title"] = "Student Registration";
+}
+
+<div class="container-fluid px-4">
+
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">Student Registration</h3>
+        </div>
+
+        <div class="card-body">
+
+
+
+
+            <form id="studentForm" asp-action="Save" method="post">
+                
+                <input type="hidden" name="Student.Id" value="@Model.Student?.Id" />
+                <!-- Add this hidden field next to your other hidden inputs inside the form -->
+                <input type="hidden" asp-for="Student.ActiveStatus" />
+
+
+                <div class="row">
+
+
+                    <!--When you switched your view file to use a ViewModel setup, using asp-for became necessary so the application knows how to pass values back and forth between your HTML form and your database.--> 
+
+                    <!-- Name -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Name <span class="text-danger">*</span></label>
+                        <input asp-for="Student.Name" class="form-control" />
+                        <span asp-validation-for="Student.Name" class="text-danger"></span>
+                    </div>
+
+                    <!-- Roll No -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Roll No <span class="text-danger">*</span></label>
+                        <input asp-for="Student.RollNo" class="form-control" />
+                        <span asp-validation-for="Student.RollNo" class="text-danger"></span>
+                    </div>
+
+                    <!-- Gender -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label d-block">Gender <span class="text-danger">*</span></label>
+
+                        <div class="form-check form-check-inline">
+                            <!-- Change name="Gender" to asp-for="Student.Gender" -->
+                            <input class="form-check-input" type="radio" asp-for="Student.Gender" value="Male">
+                            <label class="form-check-label">Male</label>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <!-- Change name="Gender" to asp-for="Student.Gender" -->
+                            <input class="form-check-input" type="radio" asp-for="Student.Gender" value="Female">
+                            <label class="form-check-label">Female</label>
+                        </div>
+
+                        <!-- This validation tag helper will now work correctly -->
+                        <span asp-validation-for="Student.Gender" class="text-danger"></span>
+                    </div>
+
+
+                    <!-- Course Dropdown -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Course <span class="text-danger">*</span></label>
+
+                        
+                        <select asp-for="Student.Course" asp-items="Model.CourseList" class="form-control">
+                            <option value="">Select Course</option>
+                        </select>
+
+                        <span asp-validation-for="Student.Course" class="text-danger"></span>
+                    </div>
+
+                    <!-- Branch -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Branch</label>
+                        <input asp-for="Student.Branch" class="form-control" />
+                        <span asp-validation-for="Student.Branch" class="text-danger"></span>
+                    </div>
+                    <!-- Semester -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Semester <span class="text-danger">*</span></label>
+                        <input asp-for="Student.Semester" class="form-control" />
+                        <span asp-validation-for="Student.Semester" class="text-danger"></span>
+                    </div>
+
+                    <!-- Father Name -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Father Name <span class="text-danger">*</span></label>
+                        <input asp-for="Student.FatherName" class="form-control" />
+                        <span asp-validation-for="Student.FatherName" class="text-danger"></span>
+                    </div>
+
+                    <!-- Mother Name -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Mother Name <span class="text-danger">*</span></label>
+                        <input asp-for="Student.MotherName" class="form-control" />
+                        <span asp-validation-for="Student.MotherName" class="text-danger"></span>
+                    </div>
+                    <!-- Email -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Email <span class="text-danger">*</span></label>
+                        <input asp-for="Student.Email" class="form-control" />
+                        <span asp-validation-for="Student.Email" class="text-danger"></span>
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Phone <span class="text-danger">*</span></label>
+                        <input asp-for="Student.Phone" class="form-control" />
+                        <span asp-validation-for="Student.Phone" class="text-danger"></span>
+                    </div>
+
+                    <!-- City -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">City <span class="text-danger">*</span></label>
+                        <input asp-for="Student.City" class="form-control" />
+                        <span asp-validation-for="Student.City" class="text-danger"></span>
+                    </div>
+
+                    <!-- Marks -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Marks <span class="text-danger">*</span></label>
+                        <input asp-for="Student.Marks" class="form-control" />
+                        <span asp-validation-for="Student.Marks" class="text-danger"></span>
+                    </div>
+
+                    <!-- Address -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Address <span class="text-danger">*</span></label>
+                        <input asp-for="Student.Address" class="form-control" />
+                        <span asp-validation-for="Student.Address" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-12 text-center">
+
+                        
+                        <button type="submit" class="btn btn-success">Submit</button>
+
+                       
+                        <button type="submit" class="btn btn-primary">Update</button>
+
+
+                            
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+    <!-- Student List Table Card -->
+    <div class="card shadow-lg mt-4 border-0">
+    <div class="card-header bg-dark text-white text-center py-3">
+        <h3 class="mb-0 fw-bold">📋 Student List</h3>
+    </div>
+
+        <div class="card-body p-0">
+
+            <!-- 1. Add this wrapper div to handle the scrolling -->
+            <div class="table-wrapper">
+
+                <table class="table table-bordered table-hover table-striped mb-0">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Gender</th>
+                            <th>Course</th>
+                            <th>Roll No</th>
+                            <th>Branch</th>
+                            <th>Semester</th>
+                            <th>FatherName</th>
+                            <th>MotherName</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Address</th>
+                            <th>City</th>
+                            <th>Marks</th>
+                            <th>CreatedBy</th>
+                            <th>CreatedOn</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    @foreach (var item in Model.Students)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td>@item.Name</td>
+                            <td>@item.Gender</td>
+                            <td>@item.Course</td>
+                            <td>@item.RollNo</td>
+                            <td>@item.Branch</td>
+                            <td>@item.Semester</td>
+                            <td>@item.FatherName</td>
+                            <td>@item.MotherName</td>
+                            <td>@item.Email</td>
+                            <td>@item.Phone</td>
+                            <td>@item.Address</td>
+                             <td>@item.City</td>
+                            <td>@item.Marks</td>
+                            <td>@item.CreatedBy</td>
+                            <td>@item.CreatedOn</td>
+                            <td>@(item.ActiveStatus == true ? "Active" : "Inactive")</td>
+                            <td>
+                                <!-- Working Edit Button -->
+                                <a asp-action="Edit" asp-controller="Home" asp-route-id="@item.Id" class="btn btn-primary">Edit</a>
+
+                                <!-- Working Delete Button -->
+                                <a asp-action="Delete" asp-controller="Home" asp-route-id="@item.Id" class="btn btn-danger" onclick="return confirm('Delete this record?')">Delete</a>
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+                // Ensure we only declare the function once globally
+                               function validateStudentForm(event) {
+            let isValid = true;
+
+            // 1. Clear out all old error messages
+            const errorIds = [
+                "nameError", "genderError", "courseError", "rollNoError",
+                "fatherNameError", "motherNameError", "semesterError",
+                "emailError", "phoneError", "addressError", "cityError", "marksError"
+            ];
+            errorIds.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) element.innerText = "";
+            });
+
+            // 💡 IMPROVED HELPER: Searches by ID first, then falls back to Name if not found
+            function getFieldValueFallback(id, alternateName) {
+                let el = document.getElementById(id);
+                if (!el) {
+                    let nameElements = document.getElementsByName(alternateName);
+                    if (nameElements && nameElements.length > 0) {
+                        el = nameElements[0];
+                    }
+                }
+                return el ? el.value.trim() : "";
+            }
+
+            // 2. Perform Clean Validations
+            if (getFieldValueFallback("Student_Name", "Student.Name") === "") {
+                document.getElementById("nameError").innerText = "Name is required";
+                isValid = false;
+            }
+            if (getFieldValueFallback("Student_Gender", "Student.Gender") === "") {
+                document.getElementById("genderError").innerText = "Gender is required";
+                isValid = false;
+            }
+            if (getFieldValueFallback("Student_Course", "Student.Course") === "") {
+                document.getElementById("courseError").innerText = "Course is required";
+                isValid = false;
+            }
+            if (getFieldValueFallback("Student_RollNo", "Student.RollNo") === "") {
+                document.getElementById("rollNoError").innerText = "RollNo is required";
+                isValid = false;
+            }
+            if (getFieldValueFallback("Student_FatherName", "Student.FatherName") === "") {
+                document.getElementById("fatherNameError").innerText = "FatherName is required";
+                isValid = false;
+            }
+            if (getFieldValueFallback("Student_MotherName", "Student.MotherName") === "") {
+                document.getElementById("motherNameError").innerText = "MotherName is required";
+                isValid = false;
+            }
+            if (getFieldValueFallback("Student_Semester", "Student.Semester") === "") {
+                document.getElementById("semesterError").innerText = "Semester is required";
+                isValid = false;
+            }
+            if (getFieldValueFallback("Student_Email", "Student.Email") === "") {
+                document.getElementById("emailError").innerText = "Email is required";
+                isValid = false;
+            }
+            if (getFieldValueFallback("Student_Phone", "Student.Phone") === "") {
+                document.getElementById("phoneError").innerText = "Phone is required";
+                isValid = false;
+            }
+            if (getFieldValueFallback("Student_Address", "Student.Address") === "") {
+                document.getElementById("addressError").innerText = "Address is required";
+                isValid = false;
+            }
+            if (getFieldValueFallback("Student_City", "Student.City") === "") {
+                document.getElementById("cityError").innerText = "City is required";
+                isValid = false;
+            }
+            if (getFieldValueFallback("Student_Marks", "Student.Marks") === "") {
+                document.getElementById("marksError").innerText = "Marks is required";
+                isValid = false;
+            }
+
+            // 3. Handle Form Submission or Blockage Safely
+            if (!isValid) {
+                if (event) event.preventDefault();
+                return false;
+            }
+
+            return true;
+        }
+
+        // Attach the validation listener securely
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.getElementById("studentForm");
+            if (form) {
+                form.addEventListener("submit", function (e) {
+                    validateStudentForm(e);
+                });
+            }
+        });
+
+        </script>
+     }
