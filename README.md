@@ -1,4 +1,4 @@
-﻿# Student Registration System
+# Student Registration System
 
 ## Project Overview
 ASP.NET Core MVC based Student Registration System.
