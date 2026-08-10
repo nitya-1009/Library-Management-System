@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿<!--Is file mein wo cheezein hoti hain jo har page par same rahengi..-->
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -6,52 +9,97 @@
     <title>@ViewData["Title"] - FirstMVCWebApp</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-  
-    <link rel="stylesheet" href="https://jsdelivr.net">
+    <link rel="stylesheet" href="https://cloudflare.com" />
+    <style>
+        /* 1. Upar wale header bar ko solid dark color dene ke liye */
+        .custom-header {
+            background-color: #1a1d20 !important; /* Premium dark theme background */
+            border-bottom: 2px solid #0d6efd; /* Niche ek modern blue border strip */
+            padding: 0.8rem 1rem;
+        }
 
+        /* 2. Sidebar ki responsive clean layout styling */
+        .custom-sidebar {
+            background-color: #212529;
+            min-height: calc(100vh - 60px);
+            border-right: 1px solid #2b3035;
+        }
+
+            .custom-sidebar .nav-link {
+                color: #ffffff !important;
+                font-weight: 500;
+                padding: 0.8rem 1rem;
+                margin-bottom: 0.5rem;
+                border-radius: 6px;
+            }
+
+                .custom-sidebar .nav-link:hover {
+                    background-color: #2b3035;
+                }
+
+                .custom-sidebar .nav-link.active {
+                    background-color: #0d6efd !important; /* Active link blue highlighted rahega */
+                    font-weight: bold;
+                }
+    </style>
 </head>
-<body>
+<body class="bg-light">
+
+    <!-- 🎯 SOLID DARK COLORED HEADER NAVBAR -->
+    <!-- 🎯 EXACT REPLACEMENT FOR YOUR HEADER IN _LAYOUT.CSHTML -->
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-dark custom-header shadow">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">FirstMVCWebApp</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <!-- Website Logo/Name -->
+                <a class="navbar-brand fw-bold text-white" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="fas fa-university me-2"></i>FirstMVCWebApp
+                </a>
+
+                <!-- 1. HOME PAGE PAR LINK DIKHANE KA LOGIC -->
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-start ms-4">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="StudentRegistration">StudentRegistration</a>
-                        </li>
+                        @if (ViewContext.RouteData.Values["action"]?.ToString() == "Index")
+                        {
+                            <!-- Yeh link sirf Home page par navbar mein chamkega taaki aap click karke form par ja sakein -->
+                            <li class="nav-item">
+                                <a class="nav-link text-white fw-bold btn btn-primary btn-sm px-3 border-0" href="/Home/StudentRegistration" style="background-color: #0d6efd;">
+                                    <i class="fas fa-user-graduate me-1"></i>Go to Student Registration
+                                </a>
+                            </li>
+                        }
                     </ul>
                 </div>
+
+                <!-- 2. LOGOUT BUTTON AREA -->
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end">
+                    <ul class="navbar-nav">
+                        @if (ViewContext.RouteData.Values["action"]?.ToString() != "Login")
+                        {
+                            <li class="nav-item">
+                                <form method="post" action="/Account/Logout" class="form-inline">
+                                    <button type="submit" class="btn btn-outline-danger fw-bold btn-sm px-3 border-2">
+                                        <i class="fas fa-sign-out-alt me-1"></i>Logout (Admin)
+                                    </button>
+                                </form>
+                            </li>
+                        }
+                    </ul>
+                </div>
+
             </div>
         </nav>
     </header>
-    <div class="container-fluid px-4">
+
+
+    <div class="container-fluid">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - FirstMVCWebApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    @* <script src="~/js/site.js" asp-append-version="true"></script> *@
+    <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
-    <!-- Bootstrap JS Bundle CDN -->
-    <script src="https://jsdelivr.net"></script>
-
 </body>
 </html>

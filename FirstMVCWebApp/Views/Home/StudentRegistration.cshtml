@@ -48,19 +48,60 @@
     ViewData["Title"] = "Student Registration";
 }
 
+<style>
+    /* टेबल के हेडर को फिक्स रखने की स्टाइल */
+    .table-primary th {
+        position: sticky !important;
+        top: 0;
+        z-index: 2;
+        background-color: #efe2ff !important;
+    }
+</style>
+
 <div class="container-fluid px-4">
 
-    <div class="card shadow">
-        <div class="card-header bg-primary text-white">
-            <h3 class="mb-0">Student Registration</h3>
+    <!-- 1. Master Row: align-items-stretch lagane se sidebar automatic form card ke height ke barabar ho jayega -->
+    <div class="row mt-4 align-items-stretch">
+
+        <!-- 🎯 2. Left Sidebar: Iski height ab right side wale form ke barabar automatic set rahegi -->
+        <div class="col-md-3 bg-dark text-white p-3 rounded shadow mb-4 d-flex flex-column">
+            <!-- 🎯 REPLACE YOUR SIDEBAR TOP HEADING BLOCK WITH THIS -->
+            <div class="text-center mb-4 pb-3 pt-2 border-bottom border-secondary" style="background-color: #111416; margin: -1rem -1rem 1.5rem -1rem; border-radius: 4px 4px 0 0;">
+                <h5 class="fw-bold m-0 text-white tracking-wide" style="font-size: 1.1rem; letter-spacing: 0.5px;">
+                    <i class="fas fa-bars me-2 text-secondary"></i>Portal Menu
+                </h5>
+            </div>
+
+            <ul class="nav flex-column nav-pills">
+                <li class="nav-item mb-2">
+                    <a href="/Home/Index" class="nav-link text-white text-decoration-none"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a href="/Home/StudentRegistration" class="nav-link active fw-bold text-start w-100" style="background-color: #0d6efd !important;"><i class="fas fa-user-graduate me-2"></i>Registration</a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a href="/Home/Privacy" class="nav-link text-white text-decoration-none"><i class="fas fa-shield-alt me-2"></i>Privacy</a>
+                </li>
+            </ul>
         </div>
 
-        <div class="card-body">
+        <!-- 🎯 3. Right Side Form Card: Isme se saari fixed height aur scrollbars (overflow) hata diye hain -->
+        <div class="col-md-9 mb-4">
+            <div class="card bg-white shadow rounded-3 p-0 h-100">
+
+                <!-- Student Registration Black Header Panel -->
+                <div class="card-header bg-dark text-white text-center py-3 mb-4 rounded-top">
+                    <h3 class="m-0 fw-bold">Student Registration</h3>
+                </div>
+
+                <!-- Iske niche aapka normal bina scrollbar wala form content aayega -->
+                <div class="px-4 pb-4">
 
 
 
 
             <form id="studentForm" asp-action="Save" method="post">
+
                 
                 <input type="hidden" name="Student.Id" value="@Model.Student?.Id" />
                 <!-- Add this hidden field next to your other hidden inputs inside the form -->
@@ -70,10 +111,9 @@
                 <div class="row">
 
 
-                    <!--When you switched your view file to use a ViewModel setup, using asp-for became necessary so the application knows how to pass values back and forth between your HTML form and your database.--> 
-
+                  
                     <!-- Name -->
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-6 mb-4">
                         <label class="form-label">Name <span class="text-danger">*</span></label>
                         <input asp-for="Student.Name" class="form-control" />
                         <span asp-validation-for="Student.Name" class="text-danger"></span>
@@ -106,22 +146,46 @@
                         <span asp-validation-for="Student.Gender" class="text-danger"></span>
                     </div>
 
+                            <!-- Course -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Course <span class="text-danger">*</span></label>
+                                <select name="Student.Course" class="form-select" required>
+                                    <option value="">Select Course</option>
 
-                    <!-- Course Dropdown -->
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Course <span class="text-danger">*</span></label>
+                                    @if (Model.Student?.Course == "BTECH")
+                                    {
+                                        <option value="BTECH" selected>BTECH</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="BTECH">BTECH</option>
+                                    }
 
-                        
-                        <select asp-for="Student.Course" asp-items="Model.CourseList" class="form-control">
-                            <option value="">Select Course</option>
-                        </select>
+                                    @if (Model.Student?.Course == "BA")
+                                    {
+                                        <option value="BA" selected>BA</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="BA">BA</option>
+                                    }
 
-                        <span asp-validation-for="Student.Course" class="text-danger"></span>
-                    </div>
+                                    @if (Model.Student?.Course == "BCOM")
+                                    {
+                                        <option value="BSC" selected>BCOM</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="BCOM">BCOM</option>
+                                    }
+                                </select>
+                            </div>
+
+
 
                     <!-- Branch -->
                     <div class="col-md-6 mb-3">
-                        <label class="form-label">Branch</label>
+                        <label class="form-label ">Branch</label>
                         <input asp-for="Student.Branch" class="form-control" />
                         <span asp-validation-for="Student.Branch" class="text-danger"></span>
                     </div>
@@ -192,25 +256,64 @@
                             
                     </div>
 
+
+
+                        <!-- ... Your last input fields/buttons end here ... -->
+                        </div>
+
+                </form>
+                </div>
+            </div>
+        </div> 
+    </div>
+
+    <div class="card bg-dark text-white p-3 mb-4 shadow border border-secondary">
+        <form method="get" action="/Home/StudentRegistration" class="m-0 w-100">
+            <div class="row g-2">
+
+                <div class="col-md-10">
+                    <div class="input-group">
+                        <span class="input-group-text bg-secondary border-0 text-white">
+                            <i class="fas fa-search"></i>
+                        </span>
+
+                     
+                        <input type="text" name="globalSearch" class="form-control bg-secondary text-white border-0 py-2"
+                               placeholder="Type anything to search (Name, Course, Phone, City, Marks, etc.)...."
+                               value="@Context.Request.Query["globalSearch"]" />
+
+                        
+                        <button type="submit" class="btn btn-primary fw-bold px-4">Search</button>
+                    </div>
                 </div>
 
-            </form>
+                <div class="col-md-2">
+                    <a href="/Home/StudentRegistration" class="btn btn-outline-light w-100 fw-bold py-2">Reset</a>
+                </div>
 
-        </div>
+            </div>
+        </form>
     </div>
+
+
+
+    
+   
+    <div style="clear: both; width: 100%; display: block; flex-basis: 100%;"></div>
+
+
 
     <!-- Student List Table Card -->
     <div class="card shadow-lg mt-4 border-0">
-    <div class="card-header bg-dark text-white text-center py-3">
-        <h3 class="mb-0 fw-bold">📋 Student List</h3>
-    </div>
 
+
+        <div class="card-header bg-dark text-white text-center py-3">
+            <h3 class="mb-0 fw-bold"> Student List</h3>
+        </div>
         <div class="card-body p-0">
-
-            <!-- 1. Add this wrapper div to handle the scrolling -->
-            <div class="table-wrapper">
-
+            <div class="table-responsive">
                 <table class="table table-bordered table-hover table-striped mb-0">
+
                     <thead class="table-primary">
                         <tr>
                             <th>Id</th>
@@ -229,49 +332,48 @@
                             <th>Marks</th>
                             <th>CreatedBy</th>
                             <th>CreatedOn</th>
-                            <th>Status</th>
+                            <th>ActiveStatus</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
+                        @foreach (var item in Model.Students)
+                        {
+                            <tr>
+                                <td>@item.Id</td>
+                                <td>@item.Name</td>
+                                <td>@item.Gender</td>
+                                <td>@item.Course</td>
+                                <td>@item.RollNo</td>
+                                <td>@item.Branch</td>
+                                <td>@item.Semester</td>
+                                <td>@item.FatherName</td>
+                                <td>@item.MotherName</td>
+                                <td>@item.Email</td>
+                                <td>@item.Phone</td>
+                                <td>@item.Address</td>
+                                <td>@item.City</td>
+                                <td>@item.Marks</td>
+                                <td>@item.CreatedBy</td>
+                                <td>@item.CreatedOn</td>
+                                <td>@(item.ActiveStatus == true ? "Active" : "Inactive")</td>
+                                <td style="vertical-align: middle;">
+                                <div class="d-flex gap-2 justify-content-center" style="min-width: 130px;">
+                                    <!-- Edit Button (W-50 se dono barabar size ke ho jayenge) -->
+                                    <button type="button" class="btn btn-primary btn-sm w-50 fw-bold py-1">Edit</button>
 
-                    @foreach (var item in Model.Students)
-                    {
-                        <tr>
-                            <td>@item.Id</td>
-                            <td>@item.Name</td>
-                            <td>@item.Gender</td>
-                            <td>@item.Course</td>
-                            <td>@item.RollNo</td>
-                            <td>@item.Branch</td>
-                            <td>@item.Semester</td>
-                            <td>@item.FatherName</td>
-                            <td>@item.MotherName</td>
-                            <td>@item.Email</td>
-                            <td>@item.Phone</td>
-                            <td>@item.Address</td>
-                             <td>@item.City</td>
-                            <td>@item.Marks</td>
-                            <td>@item.CreatedBy</td>
-                            <td>@item.CreatedOn</td>
-                            <td>@(item.ActiveStatus == true ? "Active" : "Inactive")</td>
-                            <td>
-                                <!-- Working Edit Button -->
-                                <a asp-action="Edit" asp-controller="Home" asp-route-id="@item.Id" class="btn btn-primary">Edit</a>
-
-                                <!-- Working Delete Button -->
-                                <a asp-action="Delete" asp-controller="Home" asp-route-id="@item.Id" class="btn btn-danger" onclick="return confirm('Delete this record?')">Delete</a>
+                                    <!-- Delete Button -->
+                                    <button type="button" class="btn btn-danger btn-sm w-50 fw-bold py-1">Delete</button>
+                                </div>
                             </td>
 
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div>
-    
-
-
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div> 
+        </div> 
+    </div> 
 @section Scripts
 {
     <script type="text/javascript">

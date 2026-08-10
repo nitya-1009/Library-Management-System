@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FirstMVCWebApp.Controllers
 {
@@ -27,27 +28,51 @@ namespace FirstMVCWebApp.Controllers
         {
             return View();
         }
+        
         [HttpGet]
-        public IActionResult StudentRegistration()
+        [Authorize]
+        // Function and model are same so we pass only model in return
+        public IActionResult StudentRegistration(string globalSearch)
         {
             var model = new StudentRegistrationViewModel();
 
-            // Fill the table collection so line 168 does not break
-            model.Students = _context.StudentDetails
-                .Where(x => x.ActiveStatus == true)
-                .ToList();
+            // 1. Pehle saare active student records ko base query me load karo
+            IQueryable<StudentDetails> query = _context.StudentDetails.Where(x => x.ActiveStatus == true);
 
-            // Fill the dropdown list
-            model.CourseList = _context.Courses
-                .Select(c => c.Course.ToUpper().Trim())
-                .Distinct()
-                .Select(course => new SelectListItem { Text = course, Value = course })
-                .ToList();
+            // 2. Global Search Logic - Yeh har ek column me data dhoondhega
+            if (!string.IsNullOrEmpty(globalSearch))
+            {
+                // Taaki capital ya small letter likhne par bhi perfect search ho
+                string search = globalSearch.Trim().ToLower();
 
+                query = query.Where(s =>
+                    (s.Name != null && s.Name.ToLower().Contains(search)) ||
+                    (s.RollNo != null && s.RollNo.ToLower().Contains(search)) ||
+                    (s.Gender != null && s.Gender.ToLower().Contains(search)) ||
+                    (s.Course != null && s.Course.ToLower().Contains(search)) ||
+                    (s.Branch != null && s.Branch.ToLower().Contains(search)) ||
+                    (s.Semester != null && s.Semester.ToString().Contains(search)) ||
+                    (s.FatherName != null && s.FatherName.ToLower().Contains(search)) ||
+                    (s.MotherName != null && s.MotherName.ToLower().Contains(search)) ||
+                    (s.Email != null && s.Email.ToLower().Contains(search)) ||
+                    (s.Phone != null && s.Phone.ToLower().Contains(search)) ||
+                    (s.Address != null && s.Address.ToLower().Contains(search)) ||
+                    (s.City != null && s.City.ToLower().Contains(search)) ||
+                    (s.Marks.ToString() == search) ||
+                    (search == "active" && s.ActiveStatus == true) ||
+                    (search == "inactive" && s.ActiveStatus == false)
+ );
+
+
+            }
+
+            // 3. Filtered data ko list me convert karke model me daalein
+            model.Students = query.ToList();
             return View(model);
         }
-
+       
         [HttpGet]
+        // Function and model are different so we pass model name in return 
         public IActionResult Edit(int id)
         {
             var student = _context.StudentDetails.FirstOrDefault(x => x.Id == id);
@@ -86,9 +111,13 @@ namespace FirstMVCWebApp.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public IActionResult Save(StudentRegistrationViewModel model)
         {
-            // 1. Clear validation tracking for unsubmitted fields
+            // Add this line to stop the validation error you just received:
+            ModelState.Remove("Students");
+
+            // Keep your existing remove lines:
             ModelState.Remove("Student.Id");
             ModelState.Remove("Student.CreatedBy");
             ModelState.Remove("Student.CreatedOn");
@@ -96,55 +125,69 @@ namespace FirstMVCWebApp.Controllers
             ModelState.Remove("Student.ActiveStatus");
             ModelState.Remove("Student.Action");
 
-            // 2. UPDATE EXISTING RECORD
-            if (model.Student != null && model.Student.Id > 0)
+            if (ModelState.IsValid)
             {
-                var dbStudent = _context.StudentDetails.FirstOrDefault(x => x.Id == model.Student.Id);
-                if (dbStudent != null)
+                // If it's a new student record (Id is 0)
+                if (model.Student.Id == 0)
                 {
-                    dbStudent.Name = model.Student.Name;
-                    dbStudent.RollNo = model.Student.RollNo;
-                    dbStudent.Gender = model.Student.Gender;
-                    dbStudent.Course = model.Student.Course;
-                    dbStudent.Branch = model.Student.Branch;
-                    dbStudent.Semester = model.Student.Semester;
-                    dbStudent.FatherName = model.Student.FatherName;
-                    dbStudent.MotherName = model.Student.MotherName;
-                    dbStudent.Email = model.Student.Email;
-                    dbStudent.Phone = model.Student.Phone;
-                    dbStudent.City = model.Student.City;
-                    dbStudent.Marks = model.Student.Marks;
-                    dbStudent.Address = model.Student.Address;
-                    dbStudent.ActiveStatus = model.Student.ActiveStatus;
-
-                    _context.SaveChanges();
-                    return RedirectToAction("StudentRegistration");
+                    _context.StudentDetails.Add(model.Student);
                 }
-            }
-            // 3. CREATE NEW RECORD (Bypassed ModelState to force insertion)
-            else if (model.Student != null)
-            {
-                
-                
-                model.Student.CreatedBy = User.Identity?.Name ?? "System Admin";
+                // If it's an existing student record being updated
+                else
+                {
+                    // 1. Attach the entity so Entity Framework starts tracking it
+                    _context.StudentDetails.Attach(model.Student);
 
-                model.Student.CreatedOn = DateTime.Now;
-                model.Student.ActiveStatus = true; 
-                _context.StudentDetails.Add(model.Student);
+                    // 2. Explicitly tell EF which fields are allowed to change
+                    _context.Entry(model.Student).Property(x => x.Name).IsModified = true;
+                    _context.Entry(model.Student).Property(x => x.Gender).IsModified = true;
+                    _context.Entry(model.Student).Property(x => x.Course).IsModified = true;
+                    _context.Entry(model.Student).Property(x => x.RollNo).IsModified = true;
+                    _context.Entry(model.Student).Property(x => x.Branch).IsModified = true;
+                    _context.Entry(model.Student).Property(x => x.Semester).IsModified = true;
+                    _context.Entry(model.Student).Property(x => x.FatherName).IsModified = true;
+                    _context.Entry(model.Student).Property(x => x.MotherName).IsModified = true;
+                    _context.Entry(model.Student).Property(x => x.Email).IsModified = true;
+                    _context.Entry(model.Student).Property(x => x.Phone).IsModified = true;
+                    _context.Entry(model.Student).Property(x => x.Address).IsModified = true;
+                    _context.Entry(model.Student).Property(x => x.City).IsModified = true;
+                    _context.Entry(model.Student).Property(x => x.Marks).IsModified = true;
+
+                    // By omitting CreatedBy, CreatedOn, and Status here, they are safely ignored and preserved!
+                }
+
+                // CRITICAL: You must save changes to the database
                 _context.SaveChanges();
 
-                return RedirectToAction("StudentRegistration");
+                // Redirect back to your main list view page
+                return RedirectToAction("Index");
             }
 
-            // 4. Fallback: Repopulate drop-downs if something goes wrong
-            model.Students = _context.StudentDetails?.ToList() ?? new List<StudentDetails>();
-            model.CourseList = _context.Courses
-                .Select(c => c.Course != null ? c.Course.ToUpper().Trim() : "")
+
+         
+
+            // 3. If validation FAILS, reload the dropdown lists and return the view with errors
+            foreach (var item in ModelState)
+            {
+                foreach (var error in item.Value.Errors)
+                {
+                    Console.WriteLine($"{item.Key} : {error.ErrorMessage}");
+                }
+            }
+
+            // Repopulate your UI dropdown lists/tables before returning the view
+            model.Students = _context.StudentDetails.ToList();
+            model.CourseList = _context.StudentDetails
+                .Select(c => c.Course)
                 .Distinct()
-                .Select(course => new SelectListItem { Text = course, Value = course })
-                .ToList();
+                .Select(course => new SelectListItem
+                {
+                    Text = course,
+                    Value = course
+                }).ToList();
 
             return View("StudentRegistration", model);
         }
+
     }
 }
