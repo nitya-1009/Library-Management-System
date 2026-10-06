@@ -1,10 +1,12 @@
-using FirstMVCWebApp.Data;
+﻿using FirstMVCWebApp.Data;
 using FirstMVCWebApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Diagnostics;
-using Microsoft.AspNetCore.Authorization;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace FirstMVCWebApp.Controllers
 {
@@ -18,17 +20,107 @@ namespace FirstMVCWebApp.Controllers
             _logger = logger;
             _context = context;
         }
-
+        [HttpGet]
+        [Authorize]
         public IActionResult Index()
         {
+            // 1. Fetching dashboard card counts
+            ViewBag.StudentsListCount = _context.StudentDetails != null ? _context.StudentDetails.Count() : 0;
+            ViewBag.BooksListCount = _context.Books != null ? _context.Books.Count() : 0;
+            ViewBag.IssuesListCount = _context.BookIssue != null ? _context.BookIssue.Count() : 0;
+            ViewBag.ReturnsListCount = _context.BookReturn != null ? _context.BookReturn.Count() : 0;
+
+            // 2. Base list data fallbacks
+            ViewBag.StudentsList = _context.StudentDetails != null ? _context.StudentDetails.ToList() : new List<StudentDetails>();
+            ViewBag.booksList = _context.Books != null ? _context.Books.ToList() : new List<Book>();
+
+            // 3. INNER JOIN for Book Issues (Grabs StudentName and BookName)
+            if (_context.BookIssue != null && _context.Books != null && _context.StudentDetails != null)
+            {
+                ViewBag.BookIssueList = (from issue in _context.BookIssue
+                                         join book in _context.Books on issue.BookId equals book.BookId
+                                         join student in _context.StudentDetails on issue.StudentId equals student.Id
+                                         select new
+                                         {
+                                             BookName = book.BookName,
+                                             StudentName = student.Name,
+                                             IssueDate = issue.IssueDate,
+                                             IssueTime = issue.IssueTime
+                                         }).ToList();
+            }
+            else
+            {
+                ViewBag.BookIssueList = new List<object>();
+            }
+
+            // 4. INNER JOIN for Book Returns (Grabs StudentName and BookName)
+            if (_context.BookReturn != null && _context.Books != null && _context.StudentDetails != null)
+            {
+                ViewBag.BookReturnList = (from ret in _context.BookReturn
+                                          join book in _context.Books on ret.BookId equals book.BookId
+                                          join student in _context.StudentDetails on ret.StudentId equals student.Id
+                                          select new
+                                          {
+                                              BookName = book.BookName,
+                                              StudentName = student.Name,
+                                              ReturnDate = ret.ReturnDate
+                                          }).ToList();
+            }
+            else
+            {
+                ViewBag.BookReturnList = new List<object>();
+            }
+
             return View();
         }
+
+
+
+        [HttpGet]
+        public IActionResult Analytics()
+        {
+            // 1. डेटाबेस से course wise स्टूडेंट्स की गिनती लाना
+            var studentData = _context.StudentDetails
+                .GroupBy(s => s.Course)
+                .Select(g => new { CourseName = g.Key, Count = g.Count() })
+                .ToList();
+
+            var courseLabels = studentData.Select(d => d.CourseName ?? "Unknown").ToList();
+            var courseCounts = studentData.Select(d => d.Count).ToList();
+
+            if (courseLabels.Count == 0)
+            {
+                courseLabels = new List<string> { "BA", "BTECH", "BCOM" };
+                courseCounts = new List<int> { 5, 4, 3 }; // टोटल 15 स्टूडेंट्स का ग्राफ बन जाएगा
+            }
+
+            var issuedBookIds = _context.BookIssue.Select(i => i.BookId).ToList();
+            var returnedBookIds = _context.BookReturn.Select(i => i.BookId).ToList();
+
+            int issuedBooks = _context.Books.Count(b => issuedBookIds.Contains(b.BookId) && !returnedBookIds.Contains(b.BookId));
+            int availableBooks = _context.Books.Count(b => !issuedBookIds.Contains(b.BookId) && !returnedBookIds.Contains(b.BookId));
+
+            List<int> bookStatus = new List<int>
+            {
+                availableBooks,
+                issuedBookIds.Count,
+                returnedBookIds.Count
+            };
+            // डेटा को व्यू पर भेजना
+            ViewBag.CourseLabels = courseLabels;
+            ViewBag.CourseCounts = courseCounts;
+            ViewBag.BookStatusCounts = bookStatus;
+
+            return View();
+        }
+
+
 
         public IActionResult Privacy()
         {
             return View();
         }
-        
+
         [HttpGet]
         [Authorize]
         // Function and model are same so we pass only model in return
@@ -51,7 +143,7 @@ namespace FirstMVCWebApp.Controllers
                     (s.Gender != null && s.Gender.ToLower().Contains(search)) ||
                     (s.Course != null && s.Course.ToLower().Contains(search)) ||
                     (s.Branch != null && s.Branch.ToLower().Contains(search)) ||
-                    (s.Semester != null && s.Semester.ToString().Contains(search)) ||
+                   (s.Semester != null && s.Semester.ToString().Contains(search)) ||
                     (s.FatherName != null && s.FatherName.ToLower().Contains(search)) ||
                     (s.MotherName != null && s.MotherName.ToLower().Contains(search)) ||
                     (s.Email != null && s.Email.ToLower().Contains(search)) ||
@@ -70,28 +162,75 @@ namespace FirstMVCWebApp.Controllers
             model.Students = query.ToList();
             return View(model);
         }
-       
+
         [HttpGet]
-        // Function and model are different so we pass model name in return 
+        public IActionResult SearchStudents(string query)
+        {
+            var htmlBuilder = new System.Text.StringBuilder();
+
+            var filteredStudents = _context.StudentDetails
+                .Where(x => string.IsNullOrEmpty(query) ||
+                            x.Name.Contains(query) ||
+                            x.RollNo.Contains(query))
+                .ToList();
+
+            if (filteredStudents != null && filteredStudents.Any())
+            {
+                // Yahan humne dynamic use kiya hai taaki properties directly binary bind ho sakein
+                foreach (dynamic s in filteredStudents)
+                {
+                    string status = (s.ActiveStatus != null && s.ActiveStatus.ToString().Trim().ToLower() == "active" ? "Active" : "Inactive");
+
+                    htmlBuilder.Append($@"
+                <tr>
+                    <td>{s.Id}</td>
+                    <td>{s.Name}</td>
+                    <td>{s.Gender}</td>
+                    <td>{s.Course}</td>
+                    <td>{s.RollNo}</td>
+                    <td>{s.Branch}</td>
+                    <td>{s.FatherName}</td>
+                    <td>{s.MotherName}</td>
+                    <td>{s.Semester}</td>
+                    <td>{s.Email}</td>
+                    <td>{s.Phone}</td>
+                    <td>{s.Address}</td>
+                    <td>{s.City}</td>
+                    <td>{s.Marks}</td>
+                    <td>{s.CreatedOn}</td>
+                    <td>{s.CreatedBy}</td>
+                    <td>{status}</td>
+                    <td>
+                        <a href=""/Home/StudentBooks/{s.Id}"" class=""btn btn-info btn-sm"">View</a>
+                    </td>
+                    <td>
+                        <a href=""/Home/Edit/{s.Id}"" class=""btn btn-primary btn-sm"">Edit</a>
+                        <a href=""/Home/Delete/{s.Id}"" class=""btn btn-danger btn-sm"">Delete</a>
+                    </td>
+                </tr>");
+                }
+            }
+
+            return Content(htmlBuilder.ToString(), "text/html");
+        }
+
+
+        [HttpGet]
         public IActionResult Edit(int id)
         {
             var student = _context.StudentDetails.FirstOrDefault(x => x.Id == id);
-            if (student == null) return NotFound();
+            if (student == null)
+            {
+                return NotFound();
+            }
 
             var model = new StudentRegistrationViewModel();
             model.Student = student;
 
-            // Crucial: You MUST also fill the table list here for line 168 to work!
+            // Crucial: Yaha list fill karna mat bhuliyega line 168 ke liye
             model.Students = _context.StudentDetails.ToList();
 
-            // Fill the dropdown list
-            model.CourseList = _context.Courses
-                .Select(c => c.Course.ToUpper().Trim())
-                .Distinct()
-                .Select(course => new SelectListItem { Text = course, Value = course })
-                .ToList();
-
-            return View("StudentRegistration", model);
+            return View(model);
         }
 
         public IActionResult Delete(int id)
@@ -110,11 +249,17 @@ namespace FirstMVCWebApp.Controllers
             return RedirectToAction("StudentRegistration");
         }
 
+
+       
+
         [HttpPost]
         [Authorize]
         public IActionResult Save(StudentRegistrationViewModel model)
         {
-            // Add this line to stop the validation error you just received:
+
+
+
+
             ModelState.Remove("Students");
 
             // Keep your existing remove lines:
@@ -130,8 +275,15 @@ namespace FirstMVCWebApp.Controllers
                 // If it's a new student record (Id is 0)
                 if (model.Student.Id == 0)
                 {
+
+                    model.Student.ActiveStatus = true;
+                    model.Student.CreatedOn = DateTime.Now; // यह आज की बिल्कुल सही तारीख और समय डाल देगा
+                    model.Student.CreatedBy = "NITYA";      // जो भी आपका लॉगिन यूजर या डिफ़ॉल्ट नाम है
+
+
                     _context.StudentDetails.Add(model.Student);
                 }
+
                 // If it's an existing student record being updated
                 else
                 {
@@ -160,11 +312,13 @@ namespace FirstMVCWebApp.Controllers
                 _context.SaveChanges();
 
                 // Redirect back to your main list view page
-                return RedirectToAction("Index");
+
+                return RedirectToAction("StudentRegistration", "Home");
+
             }
 
 
-         
+
 
             // 3. If validation FAILS, reload the dropdown lists and return the view with errors
             foreach (var item in ModelState)
@@ -189,5 +343,32 @@ namespace FirstMVCWebApp.Controllers
             return View("StudentRegistration", model);
         }
 
+    
+      
+    [HttpGet]
+        [Authorize]
+        public IActionResult StudentBooks(int id)
+        {
+            var student = _context.StudentDetails.FirstOrDefault(s => s.Id == id);
+            if (student == null)
+            {
+                return NotFound();
+            }
+            ViewBag.StudentName = student.Name;
+            ViewBag.RollNo = student.RollNo;
+
+            // 🔍 BookIssues टेबल से इस छात्र की जारी की गई किताबें निकालें
+            var issuedBooks = _context.BookIssue.Where(i => i.StudentId == id).ToList();
+
+            ViewBag.BooksList = _context.Books.ToList();
+            ViewBag.IssuedBooks = issuedBooks;
+
+            return View();
+
+        }
+
+        
+
     }
 }
+

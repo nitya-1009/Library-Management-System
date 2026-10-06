@@ -12,6 +12,12 @@ namespace FirstMVCWebApp.Data
 
      
         public DbSet<StudentDetails> StudentDetails { get; set; }
-        public DbSet<StudentDetails> Courses { get; set; }
+        public DbSet<Course> Courses { get; set; }
+        public DbSet<Book> Books { get; set; }
+        public DbSet<BookIssue> BookIssue { get; set; }
+        public DbSet<BookReturn> BookReturn { get; set; }
+
+
+
     }
 }

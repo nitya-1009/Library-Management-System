@@ -1,105 +1,810 @@
-﻿<!--Is file mein wo cheezein hoti hain jo har page par same rahengi..-->
-
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - FirstMVCWebApp</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://cloudflare.com" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>
+        @ViewData["Title"] - Library Management System App
+    </title>
+
+
+    <!-- Bootstrap -->
+
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+
+    <!-- Font Awesome -->
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+
     <style>
-        /* 1. Upar wale header bar ko solid dark color dene ke liye */
+
+        /* =========================================
+                   BODY
+                   ========================================= */
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+
+        /* =========================================
+                   HEADER
+                   ========================================= */
+
         .custom-header {
-            background-color: #1a1d20 !important; /* Premium dark theme background */
-            border-bottom: 2px solid #0d6efd; /* Niche ek modern blue border strip */
-            padding: 0.8rem 1rem;
+            height: 60px;
+            background-color: #1a1d20 !important;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            z-index: 2000;
+            box-sizing: border-box;
         }
 
-        /* 2. Sidebar ki responsive clean layout styling */
-        .custom-sidebar {
-            background-color: #212529;
-            min-height: calc(100vh - 60px);
-            border-right: 1px solid #2b3035;
+
+        /* =========================================
+                   HEADER LEFT
+                   ========================================= */
+
+       
+        .custom-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: auto;
         }
 
-            .custom-sidebar .nav-link {
-                color: #ffffff !important;
-                font-weight: 500;
-                padding: 0.8rem 1rem;
-                margin-bottom: 0.5rem;
-                border-radius: 6px;
+        .custom-header-title {
+            position: static;
+            transform: none;
+            font-size: 20px;
+            font-weight: 700;
+            color: #ffffff;
+            white-space: nowrap;
+        }
+       
+
+        /* =========================================
+                   HEADER TOGGLE BUTTON
+                   ========================================= */
+
+        .header-toggle-btn {
+            width: 34px;
+            height: 34px;
+            padding: 0;
+            border: none;
+            border-radius: 4px;
+            background-color: #343a40;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+            .header-toggle-btn:hover {
+                background-color: #495057;
             }
 
-                .custom-sidebar .nav-link:hover {
-                    background-color: #2b3035;
+            .header-toggle-btn i {
+                color: #ffffff;
+                font-size: 15px;
+            }
+
+
+        /* =========================================
+                   HEADER TITLE
+                   ========================================= */
+
+        .custom-header-title {
+            position: static;
+            transform: none;
+            font-size: 20px;
+            font-weight: 700;
+            color: #ffffff;
+            white-space: nowrap;
+        }
+
+        /* =========================================
+                   HEADER RIGHT
+                   ========================================= */
+
+        .custom-header-right {
+            width: 33.33%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 18px;
+            color: #ffffff;
+        }
+
+
+            /* User */
+
+            .custom-header-right span {
+                color: #ffffff;
+                font-size: 13px;
+                font-weight: 500;
+            }
+
+                .custom-header-right span i {
+                    color: #ffffff;
+                    margin-right: 5px;
                 }
 
-                .custom-sidebar .nav-link.active {
-                    background-color: #0d6efd !important; /* Active link blue highlighted rahega */
-                    font-weight: bold;
+
+            /* Logout */
+
+            .custom-header-right a {
+                color: #ffffff !important;
+                text-decoration: none;
+                font-size: 13px;
+                font-weight: 500;
+            }
+
+                .custom-header-right a:hover {
+                    color: #ffffff !important;
+                    text-decoration: underline;
                 }
+
+                .custom-header-right a i {
+                    color: #ffffff;
+                    margin-right: 5px;
+                }
+
+
+        /* =========================================
+                   PAGE LAYOUT
+                   ========================================= */
+
+        .layout-container {
+            display: flex;
+            width: 100%;
+            min-height: calc(100vh - 60px);
+        }
+
+
+        /* =========================================
+                   SIDEBAR
+                   ========================================= */
+
+        .custom-sidebar {
+            width: 240px;
+            min-width: 240px;
+            min-height: calc(100vh - 60px);
+            background-color: #212529;
+            padding-top: 15px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            transition: all 0.25s ease;
+        }
+
+
+        /* =========================================
+                   SIDEBAR TITLE
+                   ========================================= */
+
+        .portal-menu-title {
+            color: #ffffff;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            padding: 10px 20px;
+            margin-bottom: 5px;
+        }
+
+
+        /* =========================================
+                   SIDEBAR NAV
+                   ========================================= */
+
+        .custom-sidebar .nav-link {
+            color: #ffffff !important;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            box-sizing: border-box;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 400;
+            transition: 0.2s ease;
+        }
+
+
+            /* Sidebar icons */
+
+            .custom-sidebar .nav-link i {
+                width: 24px;
+                min-width: 24px;
+                margin-right: 10px;
+                text-align: center;
+                color: #ffffff !important;
+            }
+
+
+            /* Sidebar hover */
+
+            .custom-sidebar .nav-link:hover {
+                background-color: #2c3034;
+                color: #ffffff !important;
+            }
+
+                .custom-sidebar .nav-link:hover i {
+                    color: #ffffff !important;
+                }
+
+
+        /* =========================================
+                   SIDEBAR HIDE
+                   ========================================= */
+
+        .custom-sidebar.sidebar-hidden {
+            display: none !important;
+        }
+
+
+        /* =========================================
+                   MAIN CONTENT
+                   ========================================= */
+
+        .main-content {
+            flex: 1;
+            min-width: 0;
+            background-color: #f8f9fa;
+            padding: 25px;
+            box-sizing: border-box;
+            transition: all 0.25s ease;
+        }
+
+
+        /* =========================================
+                   LOGIN PAGE BACKGROUND
+                   ========================================= */
+
+        .login-bg {
+            background-color: #f4f6f9;
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+        }
+
+
+        .main-content.sidebar-collapsed {
+            flex: 0 0 100%;
+            max-width: 100%;
+            width: 100%;
+        }
+
+
+       
+
+        body.dark-mode {
+            background-color: #121212;
+        }
+
+
+        
+
+            body.dark-mode .main-content {
+                background-color: #121212 !important;
+                color: #ffffff;
+            }
+
+
+
+                body.dark-mode .main-content .card,
+                body.dark-mode .main-content form,
+                body.dark-mode .main-content .form-container,
+                body.dark-mode .main-content .form-card {
+                    background-color: #212529 !important;
+                    color: #ffffff !important;
+                }
+
+
+
+                body.dark-mode .main-content label,
+                body.dark-mode .main-content .form-label {
+                    color: #ffffff !important;
+                }
+
+
+             
+                body.dark-mode .main-content input,
+                body.dark-mode .main-content select,
+                body.dark-mode .main-content textarea,
+                body.dark-mode .main-content .form-control,
+                body.dark-mode .main-content .form-select {
+                    background-color: #343a40 !important;
+                    color: #ffffff !important;
+                    border-color: #6c757d !important;
+                }
+
+
+                    body.dark-mode .main-content input::placeholder,
+                    body.dark-mode .main-content textarea::placeholder {
+                        color: #ced4da !important;
+                    }
+
+
+                 
+                    body.dark-mode .main-content select option {
+                        background-color: #343a40;
+                        color: #ffffff;
+                    }
+
+
+
+                    body.dark-mode .main-content input:focus,
+                    body.dark-mode .main-content select:focus,
+                    body.dark-mode .main-content textarea:focus,
+                    body.dark-mode .main-content .form-control:focus,
+                    body.dark-mode .main-content .form-select:focus {
+                        background-color: #343a40 !important;
+                        color: #ffffff !important;
+                        border-color: #adb5bd !important;
+                        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.10) !important;
+                    }
+
+
+                body.dark-mode .main-content h1,
+                body.dark-mode .main-content h2,
+                body.dark-mode .main-content h3,
+                body.dark-mode .main-content h4,
+                body.dark-mode .main-content h5,
+                body.dark-mode .main-content h6,
+                body.dark-mode .main-content p,
+                body.dark-mode .main-content span {
+                    color: #ffffff;
+                }
+
+
+                
+                body.dark-mode .main-content table {
+                    background-color: #212529 !important;
+                    color: #ffffff !important;
+                }
+
+                    body.dark-mode .main-content table th {
+                        background-color: #343a40 !important;
+                        color: #ffffff !important;
+                        border-color: #495057 !important;
+                    }
+
+                    body.dark-mode .main-content table td {
+                        background-color: #212529 !important;
+                        color: #ffffff !important;
+                        border-color: #495057 !important;
+                    }
+
+
+                    body.dark-mode .main-content table tbody tr:hover td {
+                        background-color: #2c3034 !important;
+                        color: #ffffff !important;
+                    }
+
+
+                
+
+                body.dark-mode .main-content .bg-white {
+                    background-color: #212529 !important;
+                    color: #ffffff !important;
+                }
+
+
+             
+
+                body.dark-mode .main-content hr {
+                    border-color: #495057 !important;
+                }
+
+       
+
+        .custom-sidebar::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .custom-sidebar::-webkit-scrollbar-track {
+            background: #1a1d20;
+        }
+
+        .custom-sidebar::-webkit-scrollbar-thumb {
+            background: #495057;
+            border-radius: 10px;
+        }
+
+
+        
+
+        @@media (max-width: 768px) {
+            .custom-sidebar
+
+        {
+            width: 210px;
+            min-width: 210px;
+        }
+
+        .custom-header-title {
+            font-size: 17px;
+        }
+
+        .custom-header-right span {
+            display: none;
+        }
+
+        .main-content {
+            padding: 18px;
+        }
+
+        }
     </style>
+
 </head>
-<body class="bg-light">
 
-    <!-- 🎯 SOLID DARK COLORED HEADER NAVBAR -->
-    <!-- 🎯 EXACT REPLACEMENT FOR YOUR HEADER IN _LAYOUT.CSHTML -->
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-dark custom-header shadow">
-            <div class="container-fluid">
-                <!-- Website Logo/Name -->
-                <a class="navbar-brand fw-bold text-white" asp-area="" asp-controller="Home" asp-action="Index">
-                    <i class="fas fa-university me-2"></i>FirstMVCWebApp
-                </a>
 
-                <!-- 1. HOME PAGE PAR LINK DIKHANE KA LOGIC -->
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-start ms-4">
-                    <ul class="navbar-nav flex-grow-1">
-                        @if (ViewContext.RouteData.Values["action"]?.ToString() == "Index")
-                        {
-                            <!-- Yeh link sirf Home page par navbar mein chamkega taaki aap click karke form par ja sakein -->
-                            <li class="nav-item">
-                                <a class="nav-link text-white fw-bold btn btn-primary btn-sm px-3 border-0" href="/Home/StudentRegistration" style="background-color: #0d6efd;">
-                                    <i class="fas fa-user-graduate me-1"></i>Go to Student Registration
-                                </a>
-                            </li>
-                        }
-                    </ul>
-                </div>
+<body>
 
-                <!-- 2. LOGOUT BUTTON AREA -->
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end">
-                    <ul class="navbar-nav">
-                        @if (ViewContext.RouteData.Values["action"]?.ToString() != "Login")
-                        {
-                            <li class="nav-item">
-                                <form method="post" action="/Account/Logout" class="form-inline">
-                                    <button type="submit" class="btn btn-outline-danger fw-bold btn-sm px-3 border-2">
-                                        <i class="fas fa-sign-out-alt me-1"></i>Logout (Admin)
-                                    </button>
-                                </form>
-                            </li>
-                        }
-                    </ul>
-                </div>
+
+    @{
+        var currentController =
+        ViewContext.RouteData.Values["Controller"]?.ToString();
+
+        var currentAction =
+        ViewContext.RouteData.Values["Action"]?.ToString();
+
+        bool isLoginPage =
+        currentController == "Account"
+        &&
+        currentAction == "Login";
+    }
+
+
+    @if (isLoginPage)
+    {
+       
+
+        <div class="login-bg">
+
+            <div class="container">
+
+                @RenderBody()
 
             </div>
-        </nav>
-    </header>
+
+        </div>
+    }
+    else
+    {
+     
+
+        <header class="custom-header">
+
+            <div class="custom-header-left">
+
+                <button type="button"
+                        id="sidebarToggle"
+                        class="header-toggle-btn"
+                        title="Show / Hide Sidebar">
+
+                    <i class="fa-solid fa-bars"></i>
+
+                </button>
+
+                <span class="custom-header-title">
+                    LIBRARY MANAGEMENT
+                </span>
+
+            </div>
 
 
-    <div class="container-fluid">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+            <div class="custom-header-right">
+
+                <span>
+                    <i class="fa-solid fa-user"></i>
+                    Nitya
+                </span>
+
+                <a asp-controller="Account"
+                   asp-action="Login">
+
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    Logout
+
+                </a>
+
+            </div>
+
+        </header>
+
+      
+        <div class="layout-container">
+
+
+   
+            <aside class="custom-sidebar"
+                   id="customSidebar">
+
+
+             
+
+                <div class="portal-menu-title">
+
+                    PORTAL MENU
+
+                </div>
+
+
+                <nav class="nav flex-column">
+
+
+                    <a class="nav-link"
+                       href="@Url.Action("Index", "Home")">
+
+                        <i class="fa-solid fa-house"></i>
+
+                        <span>
+                            Dashboard
+                        </span>
+
+                    </a>
+
+
+               
+                    <a class="nav-link"
+                       href="@Url.Action("StudentRegistration", "Home")">
+
+                        <i class="fa-solid fa-user-plus"></i>
+
+                        <span>
+                            Student Registration
+                        </span>
+
+                    </a>
+
+
+                  
+
+                    <a class="nav-link"
+                       href="@Url.Action("Books", "Book")">
+
+                        <i class="fa-solid fa-book"></i>
+
+                        <span>
+                            Book Inventory
+                        </span>
+
+                    </a>
+
+
+                 
+                    <a class="nav-link"
+                       href="@Url.Action("Issue", "BookIssue")">
+
+                        <i class="fa-solid fa-book-open"></i>
+
+                        <span>
+                            Book Issue
+                        </span>
+
+                    </a>
+
+
+                 
+                    <a class="nav-link"
+                       href="@Url.Action("Return", "BookReturn")">
+
+                        <i class="fa-solid fa-rotate-left"></i>
+
+                        <span>
+                            Book Return
+                        </span>
+
+                    </a>
+
+
+                   
+
+                    <a class="nav-link"
+                       href="@Url.Action("Analytics", "Home")">
+
+                        <i class="fa-solid fa-chart-column"></i>
+
+                        <span>
+                            Reports & Analytics
+                        </span>
+
+                    </a>
+
+
+                </nav>
+
+
+                <!-- =================================
+                     DARK MODE BUTTON
+                     ================================= -->
+
+                <div class="px-3 py-3 mt-4 border-top border-secondary">
+
+                    <button id="darkModeToggle"
+                            type="button"
+                            class="btn btn-outline-light w-100 fw-bold py-2">
+
+                        🌙 Dark Mode
+
+                    </button>
+
+                </div>
+
+
+            </aside>
+
+
+            <!-- =====================================
+                 MAIN CONTENT
+                 ===================================== -->
+
+            <main class="main-content"
+                  id="mainContent">
+
+                @RenderBody()
+
+            </main>
+
+
+        </div>
+
+    }
+
+
+    <!-- =========================================
+         SIDEBAR TOGGLE SCRIPT
+         ========================================= -->
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const toggleButton =
+                document.getElementById("sidebarToggle");
+
+            const sidebar =
+                document.getElementById("customSidebar");
+
+            const mainContent =
+                document.getElementById("mainContent");
+
+
+            if (toggleButton && sidebar && mainContent) {
+
+                toggleButton.addEventListener("click", function () {
+
+                    sidebar.classList.toggle("sidebar-hidden");
+
+                    mainContent.classList.toggle("sidebar-collapsed");
+
+                });
+
+            }
+
+        });
+
+    </script>
+
+
+    <!-- =========================================
+         DARK MODE SCRIPT
+         ========================================= -->
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const toggleBtn =
+                document.getElementById("darkModeToggle");
+
+            const bodyEl =
+                document.body;
+
+
+            /* Login page par button nahi hoga */
+
+            if (!toggleBtn) {
+                return;
+            }
+
+
+            /* Check previous theme */
+
+            if (localStorage.getItem("theme") === "dark") {
+
+                bodyEl.classList.add("dark-mode");
+
+                toggleBtn.innerHTML =
+                    "☀️ Light Mode";
+
+            }
+
+
+            /* Toggle */
+
+            toggleBtn.addEventListener("click", function () {
+
+                bodyEl.classList.toggle("dark-mode");
+
+
+                if (bodyEl.classList.contains("dark-mode")) {
+
+                    localStorage.setItem(
+                        "theme",
+                        "dark"
+                    );
+
+                    toggleBtn.innerHTML =
+                        "☀️ Light Mode";
+
+                }
+                else {
+
+                    localStorage.setItem(
+                        "theme",
+                        "light"
+                    );
+
+                    toggleBtn.innerHTML =
+                        "🌙 Dark Mode";
+
+                }
+
+            });
+
+        });
+
+    </script>
+
+
+    <!-- =========================================
+         JQUERY
+         ========================================= -->
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+
+    <!-- =========================================
+         BOOTSTRAP JS
+         ========================================= -->
+
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+
+
+    <!-- =========================================
+         PAGE SPECIFIC SCRIPTS
+         ========================================= -->
     @await RenderSectionAsync("Scripts", required: false)
+
+
 </body>
+
 </html>

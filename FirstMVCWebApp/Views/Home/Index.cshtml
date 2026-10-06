@@ -1,8 +1,208 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿<div class="container-fluid p-3 bg-light">
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <!-- TOP HEADER BANNER -->
+    <div class="bg-dark text-white text-center py-3 mb-4 rounded shadow-sm">
+        <h3 class="m-0 fs-4 fw-bold text-uppercase tracking-wider">Library Admin Dashboard</h3>
+    </div>
+
+    <!-- DASHBOARD BOXES ROW -->
+    <div class="row g-4 mb-5">
+
+        <!-- 1. TOTAL STUDENTS BOX -->
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm text-white" style="background-color: #007bff; cursor: pointer; transition: transform 0.2s;" onclick="toggleList('studentsSection')">
+                <div class="card-body p-4">
+                    <h6 class="text-uppercase fw-bold opacity-75 mb-1" style="font-size: 0.85rem;">Total Students</h6>
+                    <h2 class="display-6 fw-bold m-0">@ViewBag.StudentsListCount</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. BOOKS STOCK BOX -->
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm text-white" style="background-color: #28a745; cursor: pointer; transition: transform 0.2s;" onclick="toggleList('booksSection')">
+                <div class="card-body p-4">
+                    <h6 class="text-uppercase fw-bold opacity-75 mb-1" style="font-size: 0.85rem;">Books Stock</h6>
+                    <h2 class="display-6 fw-bold m-0">@ViewBag.BooksListCount</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. BOOKS ISSUED BOX -->
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm text-white" style="background-color: #ffc107; cursor: pointer; transition: transform 0.2s;" onclick="toggleList('bookIssueSection')">
+                <div class="card-body p-4 text-dark">
+                    <h6 class="text-uppercase fw-bold opacity-75 mb-1" style="font-size: 0.85rem;">Books Issued</h6>
+                    <h2 class="display-6 fw-bold m-0">@ViewBag.IssuesListCount</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. TOTAL RETURNS BOX -->
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm text-white" style="background-color: #17a2b8; cursor: pointer; transition: transform 0.2s;" onclick="toggleList('bookReturnSection')">
+                <div class="card-body p-4">
+                    <h6 class="text-uppercase fw-bold opacity-75 mb-1" style="font-size: 0.85rem;">Total Returns</h6>
+                    <h2 class="display-6 fw-bold m-0">@ViewBag.ReturnsListCount</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DYNAMIC LISTS AREA CONTAINER -->
+    <div class="card border-0 shadow-sm p-4 bg-white rounded">
+
+        <!-- DEFAULT WELCOME MESSAGE -->
+        <div id="welcomeMessage" class="text-center py-4">
+            <h3 class="text-secondary fw-light">Welcome to the Library Management System</h3>
+            <p class="text-muted m-0">Click on any statistic card above to view or close its quick summary list below.</p>
+        </div>
+
+        <!-- SECTION 1: STUDENTS LIST -->
+        <div id="studentsSection" class="dashboard-list-section d-none">
+            @if (ViewBag.StudentsList != null)
+            {
+                <table class="table table-bordered table-hover text-black start">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>Name</th>
+                            <th>RollNo</th>
+                            <th>Course</th>
+                            <th>Branch</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var student in ViewBag.StudentsList)
+                        {
+                            <tr>
+                                <td>@student.Name</td>
+                                <td>@student.RollNo</td>
+                                <td>@student.Course</td>
+                                <td>@student.Branch</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+
+        <!-- SECTION 2: BOOKS STOCK LIST -->
+        <div id="booksSection" class="dashboard-list-section d-none">
+            @if (ViewBag.booksList != null)
+            {
+                <table class="table table-bordered table-hover text-black start">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>Book Name</th>
+                            <th>Author</th>
+                            <th>ISBN</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var book in ViewBag.booksList)
+                        {
+                            <tr>
+                                <td>@book.BookName</td>
+                                <td>@book.Author</td>
+                                <td>@book.ISBN</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p class="text-muted m-0">No books found</p>
+            }
+        </div>
+
+        <!-- SECTION 3: BOOK ISSUES LIST (Now matches Join properties) -->
+        <div id="bookIssueSection" class="dashboard-list-section d-none">
+            @if (ViewBag.BookIssueList != null && ((dynamic)ViewBag.BookIssueList).Count > 0)
+            {
+                <table class="table table-bordered table-hover text-black start">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>Book Name</th>
+                            <th>Student Name</th>
+                            <th>Issue Date</th>
+                            <th>Issue Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var bookIssue in ViewBag.BookIssueList)
+                        {
+                            <tr>
+                                <td>@bookIssue.BookName</td>
+                                <td>@bookIssue.StudentName</td>
+                                <td>@bookIssue.IssueDate.ToShortDateString()</td>
+                                <td>@bookIssue.IssueTime</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p class="text-muted m-0">No issued books right now</p>
+            }
+        </div>
+
+        <!-- SECTION 4: BOOK RETURNS LIST (Now matches Join properties) -->
+        <div id="bookReturnSection" class="dashboard-list-section d-none">
+            @if (ViewBag.BookReturnList != null && ((dynamic)ViewBag.BookReturnList).Count > 0)
+            {
+                <table class="table table-bordered table-hover text-black start">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>Book Name</th>
+                            <th>Student Name</th>
+                            <th>Return Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var bookReturn in ViewBag.BookReturnList)
+                        {
+                            <tr>
+                                <td>@bookReturn.BookName</td>
+                                <td>@bookReturn.StudentName</td>
+                                <td>@bookReturn.ReturnDate.ToShortDateString()</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p class="text-muted m-0">No returned books right now</p>
+            }
+        </div>
+
+    </div>
 </div>
+
+<!-- JAVASCRIPT SMART TOGGLE LOGIC -->
+<script>
+    function toggleList(sectionId) {
+        var targetSection = document.getElementById(sectionId);
+        var welcomeMsg = document.getElementById('welcomeMessage');
+
+        // If clicking a section that is already visible, hide it and restore the welcome message
+        if (!targetSection.classList.contains('d-none')) {
+            targetSection.classList.add('d-none');
+            welcomeMsg.classList.remove('d-none');
+            return;
+        }
+
+        // Hide welcome text and all other active tables first
+        welcomeMsg.classList.add('d-none');
+        var sections = document.querySelectorAll('.dashboard-list-section');
+        sections.forEach(function (sec) {
+            sec.classList.add('d-none');
+        });
+
+        // Toggle open the clicked table container
+        targetSection.classList.remove('d-none');
+    }
+</script>
+

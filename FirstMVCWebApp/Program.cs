@@ -1,11 +1,18 @@
-using FirstMVCWebApp.Data;
+﻿using FirstMVCWebApp.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(
-    builder.Configuration.GetConnectionString("DefaultConn")));
-    
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConn"),
+        sqlServerOptions => sqlServerOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(30),
+            errorNumbersToAdd: null
+        )
+    ));
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -44,8 +51,11 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// पुराना कोड बदलकर डिफ़ॉल्ट रास्ता Account/Login कर दें
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Account}/{action=Login}/{id?}");
+
+
 
 app.Run();

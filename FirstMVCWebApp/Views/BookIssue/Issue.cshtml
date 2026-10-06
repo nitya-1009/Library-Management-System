@@ -1,0 +1,109 @@
+﻿@model FirstMVCWebApp.Models.BookIssue
+
+<div class="container-fluid py-4 px-5">
+    <div class="row justify-content-center">
+        <div class="col-12 px-3">
+
+            <!-- Main Form Card (Student Registration aur Books framework se matching) -->
+            <div class="card bg-white text-dark shadow-sm mt-2 border">
+                <div class="card-header bg-dark text-white text-center py-3">
+                    <h2 class="fs-2 fw-bold m-0">Book Issue Form</h2>
+                </div>
+
+                <div class="card-body py-4">
+                  
+                    <form asp-action="IssueBook" asp-controller="BookIssue" method="post">
+
+                        <div class="row g-4 px-2">
+                            <!-- 1. Student Selection Dropdown -->
+                            <div class="col-md-6">
+                                <label class="form-label fs-5 fw-semibold text-dark">Select Student <span class="text-danger">*</span></label>
+                                <select asp-for="StudentId" asp-items="ViewBag.StudentList" class="form-select form-select-lg fs-5 border-secondary-subtle" required>
+                                    <option value="">-- Choose Student --</option>
+                                </select>
+                            </div>
+
+                            <!-- 2. Book Selection Dropdown -->
+                            <div class="col-md-6">
+                                <label class="form-label fs-5 fw-semibold text-dark">Select Book <span class="text-danger">*</span></label>
+                                <select asp-for="BookId" asp-items="ViewBag.BookList" class="form-select form-select-lg fs-5 border-secondary-subtle" required>
+                                    <option value="">-- Choose Book --</option>
+                                </select>
+                            </div>
+
+                            <!-- 3. Issue Date Box -->
+                            <div class="col-md-6">
+                                <label class="form-label fs-5 fw-semibold text-dark">Issue Date <span class="text-danger">*</span></label>
+                                <input type="date" asp-for="IssueDate" class="form-control form-control-lg fs-5 border-secondary-subtle" required />
+                            </div>
+
+                            <!-- 4. Due Date Box -->
+                            <div class="col-md-6">
+                                <label class="form-label fs-5 fw-semibold text-dark">Due Date <span class="text-danger">*</span></label>
+                                <input type="date" asp-for="DueDate" class="form-control form-control-lg fs-5 border-secondary-subtle" required />
+                            </div>
+                        </div>
+
+                        <!-- Submit Buttons -->
+                        <div class="text-end mt-5 pe-2">
+                            <button type="submit" class="btn btn-success btn-lg px-5 fs-5 fw-semibold">Issue Book</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+    <div class="card mt-4">
+        <div class="card-header text-center font-weight-bold h4 bg-dark text-white">
+            Issued Book List
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-bordered table-striped m-0">
+                <thead>
+                    <tr style="background-color: #d6cadd; color: #4a154b;">
+                        <th class="text-center font-weight-bold">Issue Id</th>
+                        <th class="text-center font-weight-bold">Book Name</th>
+                        <th class="text-center font-weight-bold">Student Name</th>
+                        <th class="text-center font-weight-bold">Issue Date</th>
+                        <th class="text-center font-weight-bold">Issue Time</th>
+                        <th class="text-center font-weight-bold">Due Date</th>
+                        <th class="text-center font-weight-bold">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (ViewBag.AllBooks != null && ((IEnumerable<dynamic>)ViewBag.AllBooks).Any())
+                    {
+                        @foreach (var bookissue in ViewBag.AllBooks)
+                        {
+                            <tr>
+                                <td class="text-center align-middle">@bookissue.IssueId</td>
+                                <td class="text-center align-middle">@bookissue.BookName</td>
+                                <td class="text-center align-middle">@bookissue.StudentName</td>
+                                <td class="text-center align-middle">@bookissue.IssueDate.ToString("dd-MM-yyyy")</td>
+                                <td class="text-center align-middle">@bookissue.IssueTime</td>
+                                <td class="text-center align-middle">@bookissue.DueDate.ToString("dd-MM-yyyy")</td>
+                                <td class="text-center align-middle">
+                                    <div class="d-inline-flex gap-1 justify-content-center">
+                                        <a href="/BookIssue/Edit/@bookissue.IssueId" class="btn btn-warning btn-sm text-dark font-weight-bold">Edit</a>
+                                        <a href="/BookIssue/Delete/@bookissue.IssueId" class="btn btn-danger btn-sm font-weight-bold">Delete</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center p-3 text-muted">No records found</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>

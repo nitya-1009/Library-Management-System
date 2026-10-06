@@ -1,4 +1,4 @@
-html {
+﻿html {
   font-size: 14px;
 }
 
@@ -20,3 +20,63 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+
+<!-- DARK MODE CUSTOM CSS -->
+<style >
+/* 1. जब डार्क मोड ऑन हो, तो पूरे पेज का बैकग्राउंड डार्क होगा */
+body.dark-mode {
+    background-color: #121212 !important; /* प्रीमियम डार्क ग्रे/ब्लैक */
+    color: #f1f1f1 !important; /* साफ़ सफ़ेद टेक्स्ट */
+}
+
+/* 2. सफ़ेद रंग के कार्ड्स और मुख्य कंटेनर को डार्क करना */
+body.dark-mode .card,
+body.dark-mode .bg-white,
+body.dark-mode .bg-light,
+body.dark-mode .card.bg-white {
+    background-color: #1e1e1e !important;
+    color: #ffffff !important;
+    border-color: #2d2d2d !important;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3) !important;
+}
+
+/* 3. आपकी पर्पल टेबल और सामान्य टेबल्स को डार्क थीम में ढालना */
+body.dark-mode table,
+body.dark-mode .table,
+body.dark-mode td {
+    background-color: #1a1a1a !important;
+    color: #e0e0e0 !important;
+    border-color: #383838 !important;
+}
+
+/* टेबल हेडर को थोड़ा अलग डार्क शेड देना */
+body.dark-mode thead,
+body.dark-mode th {
+    background-color: #262626 !important;
+    color: #ffffff !important;
+    border-color: #404040 !important;
+}
+
+/* 4. इनपुट फॉर्म्स (जैसे Enter name, Enter branch) को डार्क करना */
+body.dark-mode .form-control,
+body.dark-mode select {
+    background-color: #2d2d2d !important;
+    color: #ffffff !important;
+    border-color: #444444 !important;
+}
+
+    /* इनपुट बॉक्स पर फोकस करने का रंग */
+    body.dark-mode .form-control:focus {
+        background-color: #333333 !important;
+        color: #ffffff !important;
+        border-color: #007bff !important;
+    }
+
+    /* 5. डार्क मोड में भी प्लेसहोल्डर का टेक्स्ट साफ़ दिखे */
+    body.dark-mode .form-control::placeholder {
+        color: #a0a0a0 !important;
+        opacity: 1;
+    }
+    
+</style>
