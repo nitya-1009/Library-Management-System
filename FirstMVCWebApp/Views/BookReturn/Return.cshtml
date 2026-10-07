@@ -8,7 +8,7 @@
     <div class="card-header bg-dark text-white text-center py-3">
         <h4 class="mb-0">Book Return Form</h4>
     </div>
-    <!-- 💡 p-4 से बढ़ाकर p-5 किया है ताकि अंदर का स्पेस और साइज़ बड़ा दिखे -->
+    
     <div class="card-body p-5">
 
         <form asp-action="SaveReturn" method="post">
@@ -21,11 +21,11 @@
                     <!-- 💡 form-select-lg जोड़ा है जिससे ड्रॉपडाउन और उसके अंदर का टेक्स्ट बड़ा हो जाएगा -->
                     <select name="StudentId" class="form-select form-select-lg py-2" required>
                         <option value="">-- Choose Student --</option>
-                        @if (ViewBag.Students != null)
+                        @if (ViewBag.StudentList != null)
                         {
-                            foreach (var student in ViewBag.Students)
+                            foreach (var student in ViewBag.StudentList)
                             {
-                                <option value="@student.Id">@student.Name</option>
+                                <option value="@student.Value">@student.Text</option>
                             }
                         }
                     </select>
@@ -35,11 +35,11 @@
                     <label class="form-label fw-semibold fs-5">Select Book <span class="text-danger">*</span></label>
                     <select name="BookId" class="form-select form-select-lg py-2" required>
                         <option value="">-- Choose Book --</option>
-                        @if (ViewBag.Books != null)
+                        @if (ViewBag.BookList != null)
                         {
-                            foreach (var book in ViewBag.Books)
+                            foreach (var book in ViewBag.BookList)
                             {
-                                <option value="@book.BookId">@book.BookName</option>
+                                <option value="@book.Value">@book.Text</option>
                             }
                         }
                     </select>

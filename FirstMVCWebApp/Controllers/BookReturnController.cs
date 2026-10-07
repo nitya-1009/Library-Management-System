@@ -19,36 +19,68 @@ namespace FirstMVCWebApp.Controllers
         [HttpGet]
         public IActionResult Return()
         {
-            // Dropdowns के लिए डेटा
-            ViewBag.StudentList = _context.StudentDetails != null ? _context.StudentDetails
-                .Select(s => new SelectListItem { Value = s.Id.ToString(), Text = $"{s.Id} - {s.Name}" }).ToList()
-                : new List<SelectListItem>();
+            // Currently issued books/students ke records
+            var issuedRecords = _context.BookIssue.ToList();
 
-            ViewBag.BookList = _context.Books != null ? _context.Books
-                .Select(b => new SelectListItem { Value = b.BookId.ToString(), Text = $"{b.BookId} - {b.BookName}" }).ToList()
-                : new List<SelectListItem>();
+            // Sirf woh students jinke paas currently book issued hai
+            ViewBag.StudentList = (
+                from issue in issuedRecords
+                join student in _context.StudentDetails
+                    on issue.StudentId equals student.Id
+                where student.ActiveStatus == true
+                select new SelectListItem
+                {
+                    Value = student.Id.ToString(),
+                    Text = $"{student.Id} - {student.Name}"
+                }
+            )
+            .GroupBy(x => x.Value)
+            .Select(g => g.First())
+            .ToList();
 
-            
-            ViewBag.AllReturns = (from br in _context.BookReturn
-                                  join b in _context.Books on br.BookId equals b.BookId into bookGroup
-                                  from b in bookGroup.DefaultIfEmpty()
-                                  join s in _context.StudentDetails on br.StudentId equals s.Id into studentGroup
-                                  from s in studentGroup.DefaultIfEmpty()
-                                  select new
-                                  {
-                                      ReturnId = br.ReturnId,
-                                      BookName = b != null ? b.BookName : "Unknown Book",
-                                      StudentName = s != null ? s.Name : "Unknown Student",
-                                      ReturnDate = br.ReturnDate,
-                                      FineAmount = br.FineAmount // 👈 यह लाइन मिसिंग थी, इसे जोड़ दिया है
-                                  }).ToList();
-          
+            // Sirf currently issued books
+            ViewBag.BookList = (
+                from issue in issuedRecords
+                join book in _context.Books
+                    on issue.BookId equals book.BookId
+                select new SelectListItem
+                {
+                    Value = book.BookId.ToString(),
+                    Text = $"{book.BookId} - {book.BookName}"
+                }
+            )
+            .GroupBy(x => x.Value)
+            .Select(g => g.First())
+            .ToList();
 
-            var model = new BookReturn { ReturnDate = DateTime.Today };
+            // Already returned books ki list
+            ViewBag.AllReturns = (
+                from br in _context.BookReturn
+                join b in _context.Books
+                    on br.BookId equals b.BookId into bookGroup
+                from b in bookGroup.DefaultIfEmpty()
+
+                join s in _context.StudentDetails
+                    on br.StudentId equals s.Id into studentGroup
+                from s in studentGroup.DefaultIfEmpty()
+
+                select new
+                {
+                    ReturnId = br.ReturnId,
+                    BookName = b != null ? b.BookName : "Unknown Book",
+                    StudentName = s != null ? s.Name : "Unknown Student",
+                    ReturnDate = br.ReturnDate,
+                    FineAmount = br.FineAmount
+                }
+            ).ToList();
+
+            var model = new BookReturn
+            {
+                ReturnDate = DateTime.Today
+            };
+
             return View(model);
         }
-
-
 
         // 💾 2. फॉर्म सबमिट (Save) करने का Post मेथड
         [HttpPost]

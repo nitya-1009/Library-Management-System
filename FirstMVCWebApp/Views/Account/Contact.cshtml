@@ -1,42 +1,88 @@
 ﻿@{
-    Layout = "_Layout";
+    Layout = null;
 }
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-5">
-            <div class="card bg-dark text-white shadow rounded-3 border border-secondary">
-                <div class="card-header border-bottom border-secondary text-center py-3">
-                    <h3 class="fw-bold text-info m-0"><i class="fas fa-headset me-2"></i>Help Desk Support</h3>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Help Desk Support - Library Management</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+</head>
+
+<body class="bg-light">
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+
+                <div class="card bg-dark text-white shadow rounded-3 border border-secondary">
+
+                    <div class="card-header border-bottom border-secondary text-center py-3">
+                        <h3 class="fw-bold text-info m-0">
+                            <i class="fas fa-headset me-2"></i>
+                            Help Desk Support
+                        </h3>
+                    </div>
+
+                    <div class="card-body p-4 text-center">
+
+                        <p class="text-muted small">
+                            If you are facing any technical difficulties regarding
+                            portal authentication or data operations, please connect
+                            with the support channels below:
+                        </p>
+
+                        <hr class="border-secondary my-3">
+
+                        <div class="my-3">
+                            <p class="mb-1 fw-bold text-white-50">
+                                <i class="fas fa-envelope me-2"></i>
+                                Technical Support Email:
+                            </p>
+
+                            <p class="text-info fw-bold" style="font-size: 1.05rem;">
+                                admin.support@library.com
+                            </p>
+                        </div>
+
+                        <div class="my-3">
+                            <p class="mb-1 fw-bold text-white-50">
+                                <i class="fas fa-phone-alt me-2"></i>
+                                Helpline Number:
+                            </p>
+
+                            <p class="text-info fw-bold" style="font-size: 1.05rem;">
+                                +91 9876543210
+                                <br />
+                                <span class="small text-muted">
+                                    (10:00 AM - 05:00 PM)
+                                </span>
+                            </p>
+                        </div>
+
+                        <hr class="border-secondary my-3">
+
+                        <div class="d-grid mt-4">
+                            <a href="/Account/Login"
+                               class="btn btn-outline-light fw-bold py-2">
+                                <i class="fas fa-arrow-left me-2"></i>
+                                Back to Login
+                            </a>
+                        </div>
+
+                    </div>
                 </div>
-                <div class="card-body p-4 text-center">
 
-                    <!-- English Conversion Text -->
-                    <p class="text-muted small">If you are facing any technical difficulties regarding portal authentication or data operations, please connect with the IT support channels below:</p>
-
-                    <hr class="border-secondary my-3">
-
-                    <!-- Support Fields -->
-                    <div class="my-3">
-                        <p class="mb-1 fw-bold text-white-50"><i class="fas fa-envelope me-2"></i>Technical Support Email:</p>
-                        <p class="text-info fw-bold" style="font-size: 1.05rem;">admin.support@college.com</p>
-                    </div>
-
-                    <div class="my-3">
-                        <p class="mb-1 fw-bold text-white-50"><i class="fas fa-phone-alt me-2"></i>Helpline Number:</p>
-                        <p class="text-info fw-bold" style="font-size: 1.05rem;">+91 9876543210 <br><span class="small text-muted">(10:00 AM - 05:00 PM)</span></p>
-                    </div>
-
-                    <hr class="border-secondary my-3">
-
-                    <div class="d-grid mt-4">
-                        <a href="/Account/Login" class="btn btn-outline-light fw-bold py-2">
-                            <i class="fas fa-arrow-left me-2"></i>Back to Login
-                        </a>
-                    </div>
-
-                </div>
             </div>
         </div>
     </div>
-</div>
+
+</body>
+</html>
