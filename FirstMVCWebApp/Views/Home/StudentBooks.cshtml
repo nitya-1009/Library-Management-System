@@ -1,0 +1,65 @@
+﻿
+<!--For View Button-->
+@{
+    ViewData["Title"] = "Student Books History";
+}
+
+<!-- 1. ब्लैक हेडर पट्टी छात्र के नाम और रोल नंबर के साथ -->
+<div class="bg-dark text-white text-center py-3 rounded mb-4">
+    <h4 class="mb-1">Issued Books History</h4>
+    <p class="mb-0 opacity-75">Student: <span class="fw-bold text-warning">@ViewBag.StudentName</span> | Roll No: @ViewBag.RollNo</p>
+</div>
+
+<!-- 2. जारी की गई किताबों की टेबल -->
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-secondary text-white py-3">
+        <h5 class="mb-0"><i class="fas fa-list me-2"></i> Currently Borrowed Books</h5>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped mb-0 text-center align-middle">
+            <thead style="background-color: #e2d9f3;">
+                <tr>
+                    <th>Issue ID</th>
+                    <th>Book Name</th>
+                    <th>Issue Date</th>
+                    <th>Due Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (ViewBag.IssuedBooks != null && ((List<FirstMVCWebApp.Models.BookIssue>)ViewBag.IssuedBooks).Any())
+                {
+                    foreach (var item in ViewBag.IssuedBooks)
+                    {
+                        // 📚 किताब की आईडी से उसका नाम ढूंढने के लिए
+                        var bookName = ((List<FirstMVCWebApp.Models.Book>)ViewBag.BooksList)
+                        .FirstOrDefault(b => b.BookId == item.BookId)?.BookName ?? "Unknown Book";
+
+                        <tr>
+                            <td>@item.IssueId</td>
+                            <td class="fw-bold">@bookName</td>
+                            <td>@item.IssueDate.ToString("dd-MM-yyyy")</td>
+                            <td>@item.DueDate.ToString("dd-MM-yyyy")</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <!-- 💡 अगर इस छात्र ने कोई किताब नहीं ली है तो यह दिखेगा -->
+                    <tr>
+                        <td colspan="4" class="text-center text-danger py-4 fw-bold">
+                            <i class="fas fa-info-circle me-2"></i> This student has not borrowed any books yet.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- 🔙 वापस जाने के लिए बटन -->
+<div class="mt-4 text-start">
+    <a href="@Url.Action("StudentRegistration", "Home")" class="btn btn-dark">Back to Student List</a>
+
+
+
+</div>

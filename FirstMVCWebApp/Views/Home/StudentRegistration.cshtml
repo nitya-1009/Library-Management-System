@@ -42,6 +42,29 @@
         z-index: 2;
         background-color: #efe2ff !important; /* Keeps your header color solid while scrolling */
     }
+
+    
+    /* इनपुट पर क्लिक करने पर Bootstrap की अपनी नीली शैडो बंद करने के लिए */
+    .input-group .form-control:focus {
+        box-shadow: none !important;
+    }
+    /* जब पूरे बॉक्स पर होवर हो या उसके अंदर क्लिक (focus) हो */
+    .input-group:hover,
+    .input-group:focus-within {
+        outline: 2px solid #0d6efd !important; /* Bootstrap का Primary Blue कलर */
+        border-radius: 0.375rem; /* कोनों को गोल रखने के लिए */
+    }
+
+    /* 💡 फॉर्म के सामान्य इनपुट बॉक्स के placeholder का रंग गहरा/साफ़ करने के लिए */
+    .form-control::placeholder {
+        color: #6c757d !important; /* यह टेक्स्ट को हल्का ग्रे (गहरा) रखेगा ताकि सफ़ेद बैकग्राउंड पर साफ़ दिखे */
+        opacity: 1 !important;
+    }
+
+    /* 🔍 सर्च बार (जो गहरे रंग का है) के placeholder का रंग हल्का सफ़ेद रखने के लिए */
+    .custom-search-box .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.7) !important;
+    }
 </style>
 
 @{
@@ -60,33 +83,13 @@
 
 <div class="container-fluid px-4">
 
-    <!-- 1. Master Row: align-items-stretch lagane se sidebar automatic form card ke height ke barabar ho jayega -->
+
     <div class="row mt-4 align-items-stretch">
 
-        <!-- 🎯 2. Left Sidebar: Iski height ab right side wale form ke barabar automatic set rahegi -->
-        <div class="col-md-3 bg-dark text-white p-3 rounded shadow mb-4 d-flex flex-column">
-            <!-- 🎯 REPLACE YOUR SIDEBAR TOP HEADING BLOCK WITH THIS -->
-            <div class="text-center mb-4 pb-3 pt-2 border-bottom border-secondary" style="background-color: #111416; margin: -1rem -1rem 1.5rem -1rem; border-radius: 4px 4px 0 0;">
-                <h5 class="fw-bold m-0 text-white tracking-wide" style="font-size: 1.1rem; letter-spacing: 0.5px;">
-                    <i class="fas fa-bars me-2 text-secondary"></i>Portal Menu
-                </h5>
-            </div>
 
-            <ul class="nav flex-column nav-pills">
-                <li class="nav-item mb-2">
-                    <a href="/Home/Index" class="nav-link text-white text-decoration-none"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a>
-                </li>
-                <li class="nav-item mb-2">
-                    <a href="/Home/StudentRegistration" class="nav-link active fw-bold text-start w-100" style="background-color: #0d6efd !important;"><i class="fas fa-user-graduate me-2"></i>Registration</a>
-                </li>
-                <li class="nav-item mb-2">
-                    <a href="/Home/Privacy" class="nav-link text-white text-decoration-none"><i class="fas fa-shield-alt me-2"></i>Privacy</a>
-                </li>
-            </ul>
-        </div>
 
-        <!-- 🎯 3. Right Side Form Card: Isme se saari fixed height aur scrollbars (overflow) hata diye hain -->
-        <div class="col-md-9 mb-4">
+        <div class="col-12 mb-4">
+
             <div class="card bg-white shadow rounded-3 p-0 h-100">
 
                 <!-- Student Registration Black Header Panel -->
@@ -94,7 +97,6 @@
                     <h3 class="m-0 fw-bold">Student Registration</h3>
                 </div>
 
-                <!-- Iske niche aapka normal bina scrollbar wala form content aayega -->
                 <div class="px-4 pb-4">
 
 
@@ -115,14 +117,14 @@
                     <!-- Name -->
                     <div class="col-md-6 mb-4">
                         <label class="form-label">Name <span class="text-danger">*</span></label>
-                        <input asp-for="Student.Name" class="form-control" />
+                                <input asp-for="Student.Name" class="form-control" placeholder="Enter name" />
                         <span asp-validation-for="Student.Name" class="text-danger"></span>
                     </div>
 
                     <!-- Roll No -->
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Roll No <span class="text-danger">*</span></label>
-                        <input asp-for="Student.RollNo" class="form-control" />
+                                <input asp-for="Student.RollNo" class="form-control" placeholder="Enter roll number" />
                         <span asp-validation-for="Student.RollNo" class="text-danger"></span>
                     </div>
 
@@ -186,71 +188,71 @@
                     <!-- Branch -->
                     <div class="col-md-6 mb-3">
                         <label class="form-label ">Branch</label>
-                        <input asp-for="Student.Branch" class="form-control" />
+                                <input asp-for="Student.Branch" class="form-control" placeholder="Enter branch" />
                         <span asp-validation-for="Student.Branch" class="text-danger"></span>
                     </div>
                     <!-- Semester -->
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Semester <span class="text-danger">*</span></label>
-                        <input asp-for="Student.Semester" class="form-control" />
+                                <input asp-for="Student.Semester" class="form-control" placeholder="Enter semester" />
                         <span asp-validation-for="Student.Semester" class="text-danger"></span>
                     </div>
 
                     <!-- Father Name -->
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Father Name <span class="text-danger">*</span></label>
-                        <input asp-for="Student.FatherName" class="form-control" />
+                                <input asp-for="Student.FatherName" class="form-control" placeholder="Enter father name" />
                         <span asp-validation-for="Student.FatherName" class="text-danger"></span>
                     </div>
 
                     <!-- Mother Name -->
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Mother Name <span class="text-danger">*</span></label>
-                        <input asp-for="Student.MotherName" class="form-control" />
+                                <input asp-for="Student.MotherName" class="form-control" placeholder="Enter mother name" />
                         <span asp-validation-for="Student.MotherName" class="text-danger"></span>
                     </div>
                     <!-- Email -->
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Email <span class="text-danger">*</span></label>
-                        <input asp-for="Student.Email" class="form-control" />
+                                <input asp-for="Student.Email" class="form-control" placeholder="Enter email" />
                         <span asp-validation-for="Student.Email" class="text-danger"></span>
                     </div>
 
                     <!-- Phone -->
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Phone <span class="text-danger">*</span></label>
-                        <input asp-for="Student.Phone" class="form-control" />
+                                <input asp-for="Student.Phone" class="form-control" placeholder="Enter phone number" />
                         <span asp-validation-for="Student.Phone" class="text-danger"></span>
                     </div>
 
                     <!-- City -->
                     <div class="col-md-6 mb-3">
                         <label class="form-label">City <span class="text-danger">*</span></label>
-                        <input asp-for="Student.City" class="form-control" />
+                                <input asp-for="Student.City" class="form-control" placeholder="Enter city" />
                         <span asp-validation-for="Student.City" class="text-danger"></span>
                     </div>
 
                     <!-- Marks -->
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Marks <span class="text-danger">*</span></label>
-                        <input asp-for="Student.Marks" class="form-control" />
+                                <input asp-for="Student.Marks" class="form-control" placeholder="Enter marks" />
                         <span asp-validation-for="Student.Marks" class="text-danger"></span>
                     </div>
 
                     <!-- Address -->
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Address <span class="text-danger">*</span></label>
-                        <input asp-for="Student.Address" class="form-control" />
+                                <input asp-for="Student.Address" class="form-control" placeholder="Enter address" />
                         <span asp-validation-for="Student.Address" class="text-danger"></span>
                     </div>
 
-                    <div class="col-12 text-center">
+                    <div class="mt-4 text-end">
 
                         
-                        <button type="submit" class="btn btn-success">Submit</button>
+                        <button type="submit" class="btn btn-success px-4 mx-1">Submit</button>
 
                        
-                        <button type="submit" class="btn btn-primary">Update</button>
+                        <button type="submit" class="btn btn-primary px-4 mx-1">Update</button>
 
 
                             
@@ -258,7 +260,7 @@
 
 
 
-                        <!-- ... Your last input fields/buttons end here ... -->
+                       
                         </div>
 
                 </form>
@@ -266,34 +268,45 @@
             </div>
         </div> 
     </div>
+</div>
+<!-- PERFECTLY UNIFIED GREY SEARCH BAR -->
+<div class="card bg-white p-3 mb-4 shadow border-0">
+    <form method="get" action="/Home/StudentRegistration" class="w-100">
+        <div class="row g-2 align-items-center" >
 
-    <div class="card bg-dark text-white p-3 mb-4 shadow border border-secondary">
-        <form method="get" action="/Home/StudentRegistration" class="m-0 w-100">
-            <div class="row g-2">
-
-                <div class="col-md-10">
-                    <div class="input-group">
-                        <span class="input-group-text bg-secondary border-0 text-white">
-                            <i class="fas fa-search"></i>
-                        </span>
-
-                     
-                        <input type="text" name="globalSearch" class="form-control bg-secondary text-white border-0 py-2"
-                               placeholder="Type anything to search (Name, Course, Phone, City, Marks, etc.)...."
-                               value="@Context.Request.Query["globalSearch"]" />
-
-                        
-                        <button type="submit" class="btn btn-primary fw-bold px-4">Search</button>
-                    </div>
+            <!-- Left Side: Search Input Box with Matching Grey Icon -->
+            <div class="col-md-8">
+                <div class="input-group">
+                    <!-- Icon box changed to matching grey to remove any white gap -->
+                    <span class="input-group-text border-end-0 text-white" style="background-color: #6B7280 !important;">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <!-- Input box with placeholder text color styling -->
+                    <input type="text" name="globalSearch" id="studentSearchInput" class="form-control border-start-0 custom-grey-search" placeholder="Type anything to search..." autocomplete="off" value="@Context.Request.Query["globalSearch"]" style="background-color: #6B7280 !important; color: white !important;" />
                 </div>
-
-                <div class="col-md-2">
-                    <a href="/Home/StudentRegistration" class="btn btn-outline-light w-100 fw-bold py-2">Reset</a>
-                </div>
-
             </div>
-        </form>
-    </div>
+
+            <!-- Middle: Search Button -->
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100 fw-bold">Search</button>
+            </div>
+
+            <!-- Right Side: Reset Button -->
+            <div class="col-md-2">
+                <a href="/Home/StudentRegistration" class="btn btn-outline-dark w-100 fw-bold">Reset</a>
+            </div>
+
+        </div>
+    </form>
+</div>
+
+<!-- STYLING TO FORCE THE PLACEHOLDER TEXT TO BE VISIBLE -->
+<style>
+    .custom-grey-search::placeholder {
+        color: rgba(255, 255, 255, 0.75) !important; /* Forces placeholder text to be bright and visible */
+        opacity: 1 !important;
+    }
+</style>
 
 
 
@@ -323,53 +336,73 @@
                             <th>Roll No</th>
                             <th>Branch</th>
                             <th>Semester</th>
-                            <th>FatherName</th>
-                            <th>MotherName</th>
+                            <th>Father Name</th>
+                            <th>Mother Name</th>
                             <th>Email</th>
                             <th>Phone</th>
                             <th>Address</th>
                             <th>City</th>
                             <th>Marks</th>
-                            <th>CreatedBy</th>
-                            <th>CreatedOn</th>
-                            <th>ActiveStatus</th>
+                            <th>Created By</th>
+                            <th>Created On</th>
+                            <th>Active Status</th>
+                            <th>View Books</th>
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        @foreach (var item in Model.Students)
+                    <tbody id="studentsTableBody">
+                        @if (Model != null && Model.Students != null && Model.Students.Any())
+                        {
+                            @foreach (var item in Model.Students)
+                            {
+                                <tr>
+                                    <td>@item.Id</td>
+                                    <td>@item.Name</td>
+                                    <td>@item.Gender</td>
+                                    <td>@item.Course</td>
+                                    <td>@item.RollNo</td>
+                                    <td>@item.Branch</td>
+                                    <td>@item.Semester</td>
+                                    <td>@item.FatherName</td>
+                                    <td>@item.MotherName</td>
+                                    <td>@item.Email</td>
+                                    <td>@item.Phone</td>
+                                    <td>@item.Address</td>
+                                    <td>@item.City</td>
+                                    <td>@item.Marks</td>
+                                    <td>@item.CreatedBy</td>
+                                    <td>@item.CreatedOn</td>
+                                    <td>@(item.ActiveStatus == true ? "Active" : "Inactive")</td>
+
+                               
+                                <td>
+                                    <a href="/Home/StudentBooks/@item.Id" class="btn btn-info btn-sm text-white fw-bold">
+                                        <i class="fas fa-book-open"></i> View
+                                    </a>
+                                </td>
+
+                                    <td style="vertical-align: middle;">
+                                        <div class="d-flex gap-2 justify-content-center" style="min-width: 130px;">
+                                            <!-- वर्किंग एडिट बटन लिंक -->
+                                            <a href="@Url.Action("Edit", "Home", new { id = item.Id })" class="btn btn-primary btn-sm w-50 fw-bold py-1">Edit</a>
+
+                                            <!-- वर्किंग डिलीट बटन लिंक -->
+                                            <a href="@Url.Action("Delete", "Home", new { id = item.Id })" class="btn btn-danger btn-sm w-50 fw-bold py-1" onclick="return confirm('क्या आप इस छात्र को हटाना चाहते हैं?');">Delete</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
                         {
                             <tr>
-                                <td>@item.Id</td>
-                                <td>@item.Name</td>
-                                <td>@item.Gender</td>
-                                <td>@item.Course</td>
-                                <td>@item.RollNo</td>
-                                <td>@item.Branch</td>
-                                <td>@item.Semester</td>
-                                <td>@item.FatherName</td>
-                                <td>@item.MotherName</td>
-                                <td>@item.Email</td>
-                                <td>@item.Phone</td>
-                                <td>@item.Address</td>
-                                <td>@item.City</td>
-                                <td>@item.Marks</td>
-                                <td>@item.CreatedBy</td>
-                                <td>@item.CreatedOn</td>
-                                <td>@(item.ActiveStatus == true ? "Active" : "Inactive")</td>
-                                <td style="vertical-align: middle;">
-                                <div class="d-flex gap-2 justify-content-center" style="min-width: 130px;">
-                                    <!-- Edit Button (W-50 se dono barabar size ke ho jayenge) -->
-                                    <button type="button" class="btn btn-primary btn-sm w-50 fw-bold py-1">Edit</button>
-
-                                    <!-- Delete Button -->
-                                    <button type="button" class="btn btn-danger btn-sm w-50 fw-bold py-1">Delete</button>
-                                </div>
-                            </td>
-
+                                <td colspan="18" class="text-center text-muted py-3">
+                                    No records found
+                                </td>
                             </tr>
                         }
                     </tbody>
+
                 </table>
             </div> 
         </div> 
@@ -389,7 +422,7 @@
             ];
             errorIds.forEach(id => {
                 const element = document.getElementById(id);
-                if (element) element.innerText = "";
+                if (element) element.innerHTML = "";
             });
 
             // 💡 IMPROVED HELPER: Searches by ID first, then falls back to Name if not found
@@ -406,51 +439,51 @@
 
             // 2. Perform Clean Validations
             if (getFieldValueFallback("Student_Name", "Student.Name") === "") {
-                document.getElementById("nameError").innerText = "Name is required";
+                document.getElementById("nameError").innerHTML = "Name is required";
                 isValid = false;
             }
             if (getFieldValueFallback("Student_Gender", "Student.Gender") === "") {
-                document.getElementById("genderError").innerText = "Gender is required";
+                document.getElementById("genderError").innerHTML = "Gender is required";
                 isValid = false;
             }
             if (getFieldValueFallback("Student_Course", "Student.Course") === "") {
-                document.getElementById("courseError").innerText = "Course is required";
+                document.getElementById("courseError").innerHTML = "Course is required";
                 isValid = false;
             }
             if (getFieldValueFallback("Student_RollNo", "Student.RollNo") === "") {
-                document.getElementById("rollNoError").innerText = "RollNo is required";
+                document.getElementById("rollNoError").innerHTML = "RollNo is required";
                 isValid = false;
             }
             if (getFieldValueFallback("Student_FatherName", "Student.FatherName") === "") {
-                document.getElementById("fatherNameError").innerText = "FatherName is required";
+                document.getElementById("fatherNameError").innerHTML = "FatherName is required";
                 isValid = false;
             }
             if (getFieldValueFallback("Student_MotherName", "Student.MotherName") === "") {
-                document.getElementById("motherNameError").innerText = "MotherName is required";
+                document.getElementById("motherNameError").innerHTML = "MotherName is required";
                 isValid = false;
             }
             if (getFieldValueFallback("Student_Semester", "Student.Semester") === "") {
-                document.getElementById("semesterError").innerText = "Semester is required";
+                document.getElementById("semesterError").innerHTML = "Semester is required";
                 isValid = false;
             }
             if (getFieldValueFallback("Student_Email", "Student.Email") === "") {
-                document.getElementById("emailError").innerText = "Email is required";
+                document.getElementById("emailError").innerHTML = "Email is required";
                 isValid = false;
             }
             if (getFieldValueFallback("Student_Phone", "Student.Phone") === "") {
-                document.getElementById("phoneError").innerText = "Phone is required";
+                document.getElementById("phoneError").innerHTML = "Phone is required";
                 isValid = false;
             }
             if (getFieldValueFallback("Student_Address", "Student.Address") === "") {
-                document.getElementById("addressError").innerText = "Address is required";
+                document.getElementById("addressError").innerHTML = "Address is required";
                 isValid = false;
             }
             if (getFieldValueFallback("Student_City", "Student.City") === "") {
-                document.getElementById("cityError").innerText = "City is required";
+                document.getElementById("cityError").innerHTML = "City is required";
                 isValid = false;
             }
             if (getFieldValueFallback("Student_Marks", "Student.Marks") === "") {
-                document.getElementById("marksError").innerText = "Marks is required";
+                document.getElementById("marksError").innerHTML = "Marks is required";
                 isValid = false;
             }
 
@@ -475,3 +508,41 @@
 
         </script>
      }
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // Student search input field ko select kar rahe hain
+        var searchBox = document.getElementById("studentSearchInput");
+
+        if (searchBox) {
+
+            // Har ek keystore/input par event listener trigger hoga
+            searchBox.addEventListener("input", function () {
+
+                var searchKeyword = this.value;
+
+                // Backend controller ko keyword ke sath hit kar rahe hain
+                fetch('/Home/SearchStudents?query=' + encodeURIComponent(searchKeyword))
+                    .then(response => response.text())
+                    .then(htmlResult => {
+
+                        // Table body ko select kar rahe hain jahan naya data dikhana hai
+                        var tableBody = document.getElementById("studentsTableBody");
+
+                        if (tableBody) {
+                            // Purane data ko naye HTML result se replace kar rahe hain
+                            tableBody.innerHTML = htmlResult;
+                        }
+
+                    })
+                    .catch(err =>
+                        console.error("Live search failed:", err)
+                    );
+
+            });
+
+        }
+
+    });
+</script>

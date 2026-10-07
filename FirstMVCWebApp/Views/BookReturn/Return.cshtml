@@ -1,0 +1,115 @@
+﻿@model BookReturn
+@{
+    ViewData["Title"] = "Book Return";
+}
+
+<!-- 📦 मुख्य फॉर्म का डिब्बा -->
+<div class="card shadow-sm mb-4 border-0">
+    <div class="card-header bg-dark text-white text-center py-3">
+        <h4 class="mb-0">Book Return Form</h4>
+    </div>
+    <!-- 💡 p-4 से बढ़ाकर p-5 किया है ताकि अंदर का स्पेस और साइज़ बड़ा दिखे -->
+    <div class="card-body p-5">
+
+        <form asp-action="SaveReturn" method="post">
+          
+            <div class="row g-5">
+
+                <div class="col-md-6">
+                   
+                    <label class="form-label fw-semibold fs-5">Select Student <span class="text-danger">*</span></label>
+                    <!-- 💡 form-select-lg जोड़ा है जिससे ड्रॉपडाउन और उसके अंदर का टेक्स्ट बड़ा हो जाएगा -->
+                    <select name="StudentId" class="form-select form-select-lg py-2" required>
+                        <option value="">-- Choose Student --</option>
+                        @if (ViewBag.Students != null)
+                        {
+                            foreach (var student in ViewBag.Students)
+                            {
+                                <option value="@student.Id">@student.Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold fs-5">Select Book <span class="text-danger">*</span></label>
+                    <select name="BookId" class="form-select form-select-lg py-2" required>
+                        <option value="">-- Choose Book --</option>
+                        @if (ViewBag.Books != null)
+                        {
+                            foreach (var book in ViewBag.Books)
+                            {
+                                <option value="@book.BookId">@book.BookName</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold fs-5">Return Date <span class="text-danger">*</span></label>
+                    <!-- 💡 form-control-lg जोड़ा है तारीख बॉक्स का साइज़ बड़ा करने के लिए -->
+                    <input type="date" name="ReturnDate" class="form-control form-control-lg py-2" value="@DateTime.Now.ToString("yyyy-MM-dd")" required />
+                </div>
+
+                <div class="col-md-6">
+                    <!-- 💡 यहाँ स्टार नहीं लगाया है क्योंकि यह वैकल्पिक है -->
+                    <label class="form-label fw-semibold fs-5">Fine Amount</label>
+                    <input type="number" name="FineAmount" class="form-control form-control-lg py-2" value="0" min="0" />
+                </div>
+            </div>
+
+            <!-- बटन को थोड़ा और बड़ा (btn-lg) किया है -->
+            <div class="mt-5 text-end">
+                <button type="submit" class="btn btn-success btn-lg px-5 py-2 fw-bold">Return Book</button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header text-center font-weight-bold h4 bg-dark text-white">
+        Returned Book List
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-bordered table-striped m-0">
+            <thead>
+                <tr style="background-color: #d6cadd; color: #4a154b;">
+                    <th class="text-center font-weight-bold">Return Id</th>
+                    <th class="text-center font-weight-bold">Book Name</th>
+                    <th class="text-center font-weight-bold">Student Name</th>
+                    <th class="text-center font-weight-bold">Return Date</th>
+                    <th class="text-center font-weight-bold">Fine Amount</th>
+                    <th class="text-center font-weight-bold">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (ViewBag.AllReturns != null && ((IEnumerable<dynamic>)ViewBag.AllReturns).Any())
+                {
+                    @foreach (var item in ViewBag.AllReturns)
+                    {
+                        <tr>
+                            <td class="text-center align-middle">@item.ReturnId</td>
+                            <td class="text-center align-middle">@item.BookName</td>
+                            <td class="text-center align-middle">@item.StudentName</td>
+                            <td class="text-center align-middle">@item.ReturnDate.ToString("dd-MM-yyyy")</td>
+                            <td class="text-center align-middle">@item.FineAmount</td>
+                            <td class="text-center align-middle">
+                                <div class="d-inline-flex gap-1 justify-content-center">
+                                    <a href="/BookReturn/Edit/@item.ReturnId" class="btn btn-warning btn-sm text-dark font-weight-bold">Edit</a>
+                                    <a href="/BookReturn/Delete/@item.ReturnId" class="btn btn-danger btn-sm font-weight-bold">Delete</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="text-center p-3 text-muted">No returns found</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

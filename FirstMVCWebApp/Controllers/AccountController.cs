@@ -27,27 +27,32 @@ public class AccountController : Controller
         return View();
     }
 
-
     [HttpPost]
-    public async Task<IActionResult> Login(string username, string password)
+    public async Task<IActionResult> Login(string username, string password, string ReturnUrl = null)
     {
-        // Replace this with your actual database check logic
         if (username == "admin" && password == "Admin@123")
         {
-            // Create user identity details
+            // 1. यूजर की पहचान बनाना
             var claims = new List<Claim> { new Claim(ClaimTypes.Name, username) };
-            var identity = new ClaimsIdentity(claims, "MyCookieAuth");
-            var principal = new ClaimsPrincipal(identity);
 
-            // Write the encrypted cookie out to the browser session
-            await HttpContext.SignInAsync("MyCookieAuth", principal);
+            // यहाँ हमने "MyCookieAuth" लिख दिया है
+            var claimsIdentity = new ClaimsIdentity(claims, "MyCookieAuth");
+
+            // 2. ब्राउज़र में साइन-इन की कुकी सेव करना (यहाँ भी "MyCookieAuth" आएगा)
+            await HttpContext.SignInAsync("MyCookieAuth", new ClaimsPrincipal(claimsIdentity));
+
+            if (!string.IsNullOrEmpty(ReturnUrl) && Url.IsLocalUrl(ReturnUrl))
+            {
+                return Redirect(ReturnUrl);
+            }
 
             return RedirectToAction("StudentRegistration", "Home");
         }
 
-        ViewBag.Error = "Invalid login credentials.";
+        ViewBag.Error = "Invalid Username or Password";
         return View();
     }
+
 
     [HttpPost]
     public async Task<IActionResult> Logout()

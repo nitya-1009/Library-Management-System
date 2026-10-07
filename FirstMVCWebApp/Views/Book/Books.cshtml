@@ -1,0 +1,212 @@
+﻿@using FirstMVCWebApp.Models
+
+@model Book
+@{
+    ViewData["Title"] = "Book Inventory";
+}
+
+<style>
+
+    .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.7) !important; /* यह टेक्स्ट को हल्का सफ़ेद कर देगा */
+        opacity: 1 !important; /* कुछ ब्राउज़र्स में डिफ़ॉल्ट ओपेसिटी हटाने के लिए */
+    }
+    /* सर्च बार पर होवर या अंदर क्लिक करने पर नीली बाउंड्री */
+    .custom-search-box:hover,
+    .custom-search-box:focus-within {
+        border-color: #007bff !important;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+    }
+
+    /* इनपुट पर क्लिक करने पर Bootstrap की अपनी नीली शैडो बंद करने के लिए */
+    .input-group .form-control:focus {
+        box-shadow: none !important;
+    }
+    /* जब पूरे बॉक्स पर होवर हो या उसके अंदर क्लिक (focus) हो */
+    .input-group:hover,
+    .input-group:focus-within {
+        outline: 2px solid #0d6efd !important; /* Bootstrap का Primary Blue कलर */
+        border-radius: 0.375rem; /* कोनों को गोल रखने के लिए */
+    }
+
+    /* 💡 फॉर्म के सामान्य इनपुट बॉक्स के placeholder का रंग गहरा/साफ़ करने के लिए */
+    .form-control::placeholder {
+        color: #6c757d !important; /* यह टेक्स्ट को हल्का ग्रे (गहरा) रखेगा ताकि सफ़ेद बैकग्राउंड पर साफ़ दिखे */
+        opacity: 1 !important;
+    }
+
+    /* 🔍 सर्च बार (जो गहरे रंग का है) के placeholder का रंग हल्का सफ़ेद रखने के लिए */
+    .custom-search-box .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.7) !important;
+    }
+</style>
+
+
+
+<!-- 1. मुख्य हेडिंग / कार्ड का डिब्बा (जैसा स्टूडेंट पेज पर है) -->
+<!-- 1. केवल हेडर को ब्लैक और सेंटर करने के लिए -->
+<div class="bg-dark text-white text-center py-3 rounded mb-4">
+    <h4 class="mb-0">Book Inventory</h4>
+</div>
+
+<!-- 2. फॉर्म का हिस्सा (इसके बाहर कोई कार्ड बॉर्डर नहीं है, यह पूरा व्हाइट दिखेगा) -->
+<form asp-action="Books" method="post" class="mb-5">
+    <div class="row g-3 id="bookTableContainer">
+        <div class="col-md-6">
+            <label class="form-label">Book Name</label>
+            <input type="text" name="BookName" class="form-control" placeholder="Enter book name" required />
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Author Name</label>
+            <input type="text" name="Author" class="form-control" placeholder="Enter author name" required />
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">ISBN No <span class="text-danger">*</span></label>
+            <input type="text" name="ISBN" class="form-control" placeholder="Enter ISBN number" required />
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Quantity <span class="text-danger">*</span></label>
+            <input type="number" name="Quantity" class="form-control" placeholder="Enter quantity" required />
+
+        </div>
+    </div>
+
+    <!-- Button -->
+    <div class="mt-4 text-end">
+        <button type="submit" class="btn btn-success px-4 mx-1">Submit</button>
+        <button type="reset" class="btn btn-primary px-4 mx-1">Update</button>
+    </div>
+</form>
+
+   
+<div class="card bg-white p-3 mb-4 shadow border-0">
+    <div class="row g-2 align-items-center">
+
+        <!-- लेफ्ट साइड: पूरा ग्रे सर्च बॉक्स (बिना किसी गैप के) -->
+        <div class="col-md-10">
+            <div class="input-group">
+                <span class="input-group-text border-end-0 text-white" style="background-color: #6B7280 !important;">
+                    <i class="fas fa-search"></i>
+                </span>
+                <input type="text" id="bookSearchInput" class="form-control border-start-0 custom-grey-search" placeholder="Type anything to search..." autocomplete="off" style="background-color: #6B7280 !important; color: white !important;" />
+            </div>
+        </div>
+
+        <!-- राइट साइड: केवल रीसेट बटन (पुराना सर्च बटन पूरी तरह हटा दिया है क्योंकि अब लाइव सर्च होगा!) -->
+        <div class="col-md-2">
+            <a href="/Book/Books" class="btn btn-outline-dark w-100 fw-bold">Reset</a>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .custom-grey-search::placeholder {
+        color: rgba(255, 255, 255, 0.75) !important;
+        opacity: 1 !important;
+    }
+</style>
+            
+
+
+
+
+
+
+
+<!-- 4. टेबल / ग्रिड का हिस्सा -->
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-dark text-white text-center py-3">
+        <h4 class="mb-0">Book List</h4>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped mb-0 text-center align-middle">
+            <thead class="table-purple-light" style="background-color: #e2d9f3;">
+                <tr>
+                    <th>Book Id</th>
+                    <th>Book Name</th>
+                    <th>Author</th>
+                    <th>ISBN</th>
+                    <th>Quantity</th>
+                   <th class="py-3">Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="booksTableBody">
+                @if (ViewBag.AllBooks != null)
+                {
+                    foreach (var book in ViewBag.AllBooks)
+                    {
+                        <tr>
+                            <td>@book.BookId</td>
+                            <td>@book.BookName</td>
+                            <td>@book.Author</td>
+                            <td>@book.ISBN</td>
+                            <td>@book.Quantity</td>
+                            <td>
+                                <!-- तीनों कंडीशंस बिना किसी बॉक्स और डॉट के -->
+                                @if (book.Status == "Issued")
+                                {
+                                    <span class="fw-bold" style="color: #d69e2e; font-size: 0.9rem; letter-spacing: 0.5px;">
+                                        Issued
+                                    </span>
+                                }
+                                else if (book.Status == "Returned")
+                                {
+                                    <!--Returned के लिए सुंदर ब्लू/पर्पल टोन का टेक्स्ट -->
+                                    <span class="fw-bold" style="color: #3182ce; font-size: 0.9rem; letter-spacing: 0.5px;">
+                                        Returned
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="fw-bold" style="color: #38a169; font-size: 0.9rem; letter-spacing: 0.5px;">
+                                        Available
+                                    </span>
+                                }
+                            </td>
+
+
+
+                            <td>
+                                <!-- आपके पुराने Edit और Delete बटन्स यहाँ रहेंगे -->
+                                <button class="btn btn-sm btn-warning text-dark px-2 fw-semibold">Edit</button>
+                                <button class="btn btn-sm btn-danger px-2 fw-semibold">Delete</button>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7" class="text-center py-4 text-muted">No records found</td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var searchBox = document.getElementById('bookSearchInput');
+        if (searchBox) {
+            searchBox.addEventListener('input', function() {
+                var searchKeyword = this.value;
+
+                // आपके कंट्रोलर के नए SearchBooks पाथ पर हिट करेगा
+                fetch('/Book/SearchBooks?query=' + encodeURIComponent(searchKeyword))
+                    .then(response => response.text())
+                    .then(htmlResult => {
+                        var tableBody = document.getElementById('booksTableBody');
+                        if (tableBody) {
+                            tableBody.innerHTML = htmlResult; // टेबल को लाइव चेंज करेगा
+                        }
+                    })
+                    .catch(err => console.error("Live search failed:", err));
+            });
+        }
+    });
+</script>

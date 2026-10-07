@@ -1,0 +1,93 @@
+﻿@{
+    ViewData["Title"] = "Library Analytics & Reports";
+}
+
+<!-- LOAD THE EXT-CHARTING JAVASCRIPT LAYER -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+<div class="container-fluid p-4 bg-light">
+
+    <!-- TOP HEADER BANNER TITLE PANEL -->
+    <div class="bg-dark text-white text-center py-3 mb-4 rounded shadow-sm">
+        <h2 class="m-0 fs-4 fw-bold text-uppercase tracking-wider">
+            <i class="bi bi-bar-chart-line me-2"></i> Library Analytics & Reports
+        </h2>
+    </div>
+
+    <!-- CHARTS CANVAS PLACEMENT GRID -->
+    <div class="row g-4">
+
+        <!-- 1. LEFT SIDE CARD CONTAINER: BAR CHART CANVAS -->
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm p-4 bg-white rounded">
+                <h5 class="text-primary mb-3 fw-bold border-bottom pb-2">Student Distribution by Course</h5>
+                <div style="position: relative; height:300px; width:100%;">
+                    <!-- YOUR CHOSEN BAR CANVAS ID OBJECT -->
+                    <canvas id="courseBarChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. RIGHT SIDE CARD CONTAINER: PIE CHART CANVAS -->
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm p-4 bg-white rounded">
+                <h5 class="text-success mb-3 fw-bold border-bottom pb-2">Overall Book Inventory Status</h5>
+                <div style="position: relative; height:300px; width:100%; display: flex; justify-content: center;">
+                    <!-- YOUR CHOSEN PIE CANVAS ID OBJECT -->
+                    <canvas id="bookPieChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- COMPREHENSIVE JAVASCRIPT OBJECT RENDER TRACER -->
+<script>
+    // Moving data safely from C# runtime variables to client-side JS arrays
+    var courseLabels = @Json.Serialize(ViewBag.CourseLabels ?? new List<string>());
+    var courseCounts = @Json.Serialize(ViewBag.CourseCounts ?? new List<int>());
+    var bookStatusCounts = @Json.Serialize(ViewBag.BookStatusCounts ?? new List<int> { 0, 0, 0 });
+
+    // 1. Initializing your Student Bar Graphical Metrics Canvas
+    var ctxBar = document.getElementById('courseBarChart').getContext('2d');
+    new Chart(ctxBar, {
+        type: 'bar',
+        data: {
+            labels: courseLabels,
+            datasets: [{
+                label: 'Number of Students',
+                data: courseCounts, // Fixed: Syntax error and dangling code removed completely
+                backgroundColor: '#5c4b9b', // Premium theme purple palette accent
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1 }
+                }
+            }
+        }
+    });
+
+    // 2. Initializing your Inventory Pie Status Metrics Canvas
+    var ctxPie = document.getElementById('bookPieChart').getContext('2d');
+    new Chart(ctxPie, {
+        type: 'pie',
+        data: {
+            labels: ['Available', 'Issued', 'Returned'],
+            datasets: [{
+                data: bookStatusCounts,
+                backgroundColor: ['#28a745', '#ffc107', '#3182ce'] // Uniform solid green, amber and cyan shades
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+</script>
